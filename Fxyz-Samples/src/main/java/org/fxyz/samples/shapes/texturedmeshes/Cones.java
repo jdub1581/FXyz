@@ -30,12 +30,13 @@
 package org.fxyz.samples.shapes.texturedmeshes;
 
 import javafx.scene.Node;
-import org.fxmisc.easybind.Subscription;
+import org.fxmisc.easybind.EasyBind;
 import org.fxyz.controls.ControlCategory;
 import org.fxyz.controls.NumberSliderControl;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.TexturedMeshSample;
 import org.fxyz.shapes.primitives.ConeMesh;
+import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 /**
@@ -47,14 +48,14 @@ public class Cones extends TexturedMeshSample {
     
     public static void main(String[] args){launch(args);}
     
-    protected Var<Integer> divisions = Var.newSimpleVar(64);
-    protected Subscription divSubscriber = (Subscription) divisions.pin();
+    protected Val<Integer> divisions = Val.constant(64);
+    //protected Subscription divSubscriber = (Subscription) divisions.pin();
     
     protected Var<Double> radius = Var.newSimpleVar(50.0);
-    protected Subscription radiusSubscriber = (Subscription) radius.pin();
+    //protected Subscription radiusSubscriber = (Subscription) radius.pin();
     
     protected Var<Double> height = Var.newSimpleVar(75.0);
-    protected Subscription heightSubscriber = (Subscription) height.pin();
+    //protected Subscription heightSubscriber = (Subscription) height.pin();
     
     
     @Override
@@ -84,11 +85,11 @@ public class Cones extends TexturedMeshSample {
         radSlider.getSlider().setMajorTickUnit(0.5);
         radSlider.getSlider().setBlockIncrement(0.01d);
         
-        
-        
         ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
-        //geomControls.addControls(widthSlider,heightSlider,depthSlider,levelSlider);
-
+        geomControls.addControls(divsSlider,heightSlider,radSlider);
+        
+        EasyBind.when(model.visibleProperty()).bind(((ConeMesh)model).divisionsProperty(), divsSlider.getSlider().valueProperty());
+        
         this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,

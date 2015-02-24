@@ -36,6 +36,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.transform.Rotate;
 import org.fxyz.controls.ControlCategory;
+import org.fxyz.controls.NumberSliderControl;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.TexturedMeshSample;
 import org.fxyz.shapes.primitives.SegmentedTorusMesh;
@@ -135,10 +136,13 @@ public class SegmentedTorus extends TexturedMeshSample {
     
     @Override
     protected Node buildControlPanel() {
+        final NumberSliderControl majorRads = ControlFactory.buildNumberSlider(majRad, 1, 100);
+        final NumberSliderControl minorRads = ControlFactory.buildNumberSlider(minRad, 1, 100);
+        final NumberSliderControl majDivs = ControlFactory.buildNumberSlider(majorDivs, 8, 360);
         ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
         geomControls.addControls(
-                ControlFactory.buildNumberSlider(majRad, 1, 100),
-                ControlFactory.buildNumberSlider(minRad, 1, 100),
+                majorRads,
+                minorRads,
                 ControlFactory.buildNumberSlider(majorDivs, 8, 360),
                 ControlFactory.buildNumberSlider(minorDivs, 8, 360),
                 ControlFactory.buildNumberSlider(majRadCrop, 0, 50),
