@@ -47,7 +47,7 @@ public class SurfacePlot extends TexturedMeshSample {
         
     @Override
     public void createMesh() {        
-        model = new SurfacePlotMesh(p->Math.sin(p.magnitude())/p.magnitude(), 20,20,100,100,2);        
+        model = new SurfacePlotMesh(p->Math.sin(p.magnitude())/p.magnitude(), 20.0,20.0,100,100,2.0);        
         model.getTransforms().addAll(new Rotate(0, Rotate.X_AXIS), rotateY);    
         group.getChildren().add(model);         
     }

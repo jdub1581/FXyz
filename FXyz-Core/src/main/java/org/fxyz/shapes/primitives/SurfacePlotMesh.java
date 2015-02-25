@@ -89,7 +89,7 @@ public class SurfacePlotMesh extends TexturedMesh {
 
     @Override
     protected final void updateMesh(){       
-        //setMesh(null);
+        setMesh(null);
         mesh=createPlotMesh(
             getFunction2D(), 
             getRangeX(),getRangeY(),
