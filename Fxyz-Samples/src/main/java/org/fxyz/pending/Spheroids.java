@@ -27,7 +27,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package org.fxyz.samples.shapes.texturedmeshes;
+package org.fxyz.pending;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -79,24 +79,18 @@ public class Spheroids extends ShapeBaseSample<SpheroidMesh> {
 
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl major = ControlFactory.buildNumberSlider(majRad, 10, 110);
-        NumberSliderControl minor = ControlFactory.buildNumberSlider(minRad, 10, 110);
-        NumberSliderControl div = ControlFactory.buildNumberSlider(divs, 4, 64);
+        NumberSliderControl major = ControlFactory.buildNumberSlider(0.01, 10, 110);
+        NumberSliderControl minor = ControlFactory.buildNumberSlider(0.01, 10, 110);
+        NumberSliderControl div = ControlFactory.buildNumberSlider(1, 4, 64);
 
-        ControlCategory geom = ControlFactory.buildCategory("Geometry");
-        geom.addControls(div, minor, major);
+        ControlCategory geomControls  = controlPanel.getGeometry();
+        geomControls.addControls(div, minor, major);        
         
-        controlPanel = ControlFactory.buildControlPanel(
-                ControlFactory.buildMeshViewCategory(wireMode, culling),
-                geom
-               
-        );
-        
-        EasyBind.when(model.visibleProperty()).bind(((SpheroidMesh)model).drawModeProperty(), wireMode);
-        EasyBind.when(model.visibleProperty()).bind(((SpheroidMesh)model).cullFaceProperty(), culling);
-        EasyBind.when(model.visibleProperty()).bind(((SpheroidMesh)model).divisionsProperty(), div.getSlider().valueProperty());
-        EasyBind.when(model.visibleProperty()).bind(((SpheroidMesh)model).majorRadiusProperty(), major.getSlider().valueProperty());
-        EasyBind.when(model.visibleProperty()).bind(((SpheroidMesh)model).minorRadiusProperty(), minor.getSlider().valueProperty());
+        EasyBind.when(model.visibleProperty()).bind((model).drawModeProperty(), wireMode);
+        EasyBind.when(model.visibleProperty()).bind((model).cullFaceProperty(), culling);
+        EasyBind.when(model.visibleProperty()).bind((model).divisionsProperty(), div.getSlider().valueProperty());
+        EasyBind.when(model.visibleProperty()).bind((model).majorRadiusProperty(), major.getSlider().valueProperty());
+        EasyBind.when(model.visibleProperty()).bind((model).minorRadiusProperty(), minor.getSlider().valueProperty());
         
         return controlPanel;
     }

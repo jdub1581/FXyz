@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
@@ -11,26 +12,50 @@
 <?import javafx.scene.layout.*?>
 
 
-<Group cache="true" cacheHint="SPEED" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="683.0" prefWidth="943.0" style="-fx-background-color: black;" styleClass="home-page" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text cache="true" cacheHint="SPEED" depthTest="DISABLE" fill="AQUA" fontSmoothingType="LCD" stroke="TRANSPARENT" strokeType="OUTSIDE" strokeWidth="0.0" text="F(X)yz">
-         <font>
-            <Font name="MV Boli" size="96.0" />
-         </font>
-         <effect>
-            <DropShadow blurType="GAUSSIAN" color="AQUA" spread="0.5">
-               <input>
-                  <InnerShadow choke="0.56" color="WHITE" height="5.25" radius="2.0625" width="5.0">
+      <Group cache="true" cacheHint="SPEED">
+         <children>
+            <Text fx:id="logo" cache="true" cacheHint="SPEED" depthTest="DISABLE" fill="AQUA" fontSmoothingType="LCD" stroke="TRANSPARENT" strokeType="OUTSIDE" strokeWidth="0.0" text="F(X)yz">
+               <font>
+                  <Font name="MV Boli" size="96.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="GAUSSIAN" color="AQUA" spread="0.5">
                      <input>
-                        <InnerShadow blurType="GAUSSIAN" choke="0.31" color="#000000bf" height="40.0" radius="19.5" width="40.0" />
+                        <InnerShadow choke="0.56" color="WHITE" height="5.25" radius="2.0625" width="5.0">
+                           <input>
+                              <InnerShadow blurType="GAUSSIAN" choke="0.31" color="#000000bf" height="40.0" radius="19.5" width="40.0" />
+                           </input>
+                        </InnerShadow>
                      </input>
-                  </InnerShadow>
-               </input>
-            </DropShadow>
+                  </DropShadow>
+               </effect>
+            </Text>
+         </children>
+         <effect>
+            <Bloom threshold="1.0" />
          </effect>
-      </Text>
+      </Group>
+      <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="CENTER_LEFT">
+         <children>
+            <Path fill="#1f93ff00" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="BEVEL" strokeWidth="2.0" StackPane.alignment="CENTER_LEFT">
+                <elements>
+                    <MoveTo />
+                    <ArcTo radiusX="50.0" radiusY="50.0" x="30.0" y="-30.0" />
+                  <ArcTo radiusX="50.0" radiusY="50.0" sweepFlag="true" x="20.0" />
+                  <ArcTo radiusX="50.0" radiusY="50.0" sweepFlag="true" x="30.0" y="30.0" />
+                  <ArcTo radiusX="50.0" radiusY="50.0" />
+                  <ClosePath />
+                </elements>
+               <StackPane.margin>
+                  <Insets left="15.0" />
+               </StackPane.margin>
+            </Path>
+         </children>
+         <StackPane.margin>
+            <Insets left="15.0" />
+         </StackPane.margin>
+      </HBox>
    </children>
-   <effect>
-      <Bloom threshold="1.0" />
-   </effect>
-</Group>
+</StackPane>

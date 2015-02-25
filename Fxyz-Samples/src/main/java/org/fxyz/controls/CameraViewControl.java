@@ -30,6 +30,7 @@
 package org.fxyz.controls;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -46,7 +47,7 @@ import org.fxyz.scene.CameraView;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class CameraViewControl extends ControlBase<BooleanProperty>{
+public class CameraViewControl extends ControlBase{
     @FXML
     private Label label;
     @FXML
@@ -56,8 +57,8 @@ public class CameraViewControl extends ControlBase<BooleanProperty>{
     
     private final CameraView view;
 
-    public CameraViewControl(BooleanProperty enabled, SubScene subScene, StackPane parentPane) {
-        super("/org/fxyz/controls/CameraViewControl.fxml", enabled);
+    public CameraViewControl(final SubScene subScene, final StackPane parentRoot) {
+        super("/org/fxyz/controls/CameraViewControl.fxml");
         
         this.view = new CameraView(subScene);
         this.view.setFitWidth(200);
@@ -96,7 +97,7 @@ public class CameraViewControl extends ControlBase<BooleanProperty>{
         positions.setPrefSize(USE_COMPUTED_SIZE, USE_PREF_SIZE);
         container.getChildren().add(positions);
         
-        parentPane.getChildren().add(CameraViewControl.this);
+        parentRoot.getChildren().add(CameraViewControl.this);
         
         enabled.addListener(l->{
             if(enabled.getValue()){
@@ -108,6 +109,6 @@ public class CameraViewControl extends ControlBase<BooleanProperty>{
         StackPane.setMargin(CameraViewControl.this, new Insets(120));
     }
 
-       
+    private final BooleanProperty enabled = new SimpleBooleanProperty(this, "Enable CameraView", false);   
     
 }

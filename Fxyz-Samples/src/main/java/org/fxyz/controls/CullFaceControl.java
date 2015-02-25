@@ -29,8 +29,8 @@
 
 package org.fxyz.controls;
 
-import javafx.beans.property.Property;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.shape.CullFace;
 
@@ -43,9 +43,9 @@ public class CullFaceControl extends ControlBase{
     @FXML
     private ComboBox<CullFace> selection;
 
-    public CullFaceControl(final Property<CullFace> prop) {        
-        super("/org/fxyz/controls/CullFaceControl.fxml", prop);        
-        prop.bind(selection.getSelectionModel().selectedItemProperty());
+    public CullFaceControl(Node m) {        
+        super("/org/fxyz/controls/CullFaceControl.fxml", m);        
+        //prop.bind(selection.getSelectionModel().selectedItemProperty());
         selection.getSelectionModel().select(0);
     }
 

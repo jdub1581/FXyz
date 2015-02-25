@@ -92,7 +92,7 @@ import org.fxyz.shapes.primitives.KnotMesh;
  *
  * @author jpereda
  */
-public class Knots extends TexturedMeshSample {
+public class Knots extends TexturedMeshSample<KnotMesh> {
     
     public static void main(String[] args){Knots.launch(args);}
     
@@ -205,12 +205,12 @@ public class Knots extends TexturedMeshSample {
                 this.wireCrop.get()
         );
         this.model.getTransforms().addAll(new Rotate(0, Rotate.X_AXIS), this.rotateY);
-        this.model.setTextureModeNone(this.colorBinding.get());
+        this.model.setTextureModeNone(model.getDiffuseColor());
     }
 
     @Override
     protected void addMeshAndListeners() {
-
+        
     }
 
     @Override
@@ -220,85 +220,70 @@ public class Knots extends TexturedMeshSample {
 
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl majRadSlider = ControlFactory.buildNumberSlider(this.majRad, .01D, 200D);
+        NumberSliderControl majRadSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         majRadSlider.getSlider().setMinorTickCount(4);
         majRadSlider.getSlider().setMajorTickUnit(25);
         majRadSlider.getSlider().setBlockIncrement(0.01d);
 
-        NumberSliderControl minRadSlider = ControlFactory.buildNumberSlider(this.minRad, .01D, 200D);
+        NumberSliderControl minRadSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         minRadSlider.getSlider().setMinorTickCount(4);
         minRadSlider.getSlider().setMajorTickUnit(25);
         minRadSlider.getSlider().setBlockIncrement(0.01d);
 
-        NumberSliderControl tRadSlider = ControlFactory.buildNumberSlider(this.wireRad, 0.01D, 25D);
+        NumberSliderControl tRadSlider = ControlFactory.buildNumberSlider(0.01, 0.01D, 25D);
         tRadSlider.getSlider().setMinorTickCount(4);
         tRadSlider.getSlider().setMajorTickUnit(5);
         tRadSlider.getSlider().setBlockIncrement(0.01d);
 
-        NumberSliderControl wDivSlider = ControlFactory.buildNumberSlider(this.wireDivs, 2, 200);
+        NumberSliderControl wDivSlider = ControlFactory.buildNumberSlider(1, 2, 200);
         wDivSlider.getSlider().setMinorTickCount(4);
         wDivSlider.getSlider().setMajorTickUnit(50);
         wDivSlider.getSlider().setBlockIncrement(1);
         wDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl mCropSlider = ControlFactory.buildNumberSlider(this.wireCrop, 0l, 98);
+        NumberSliderControl mCropSlider = ControlFactory.buildNumberSlider(1, 0l, 98);
         mCropSlider.getSlider().setMinorTickCount(4);
         mCropSlider.getSlider().setMajorTickUnit(50);
         mCropSlider.getSlider().setBlockIncrement(1);
         mCropSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl lDivSlider = ControlFactory.buildNumberSlider(this.lenDivs, 4l, 500);
+        NumberSliderControl lDivSlider = ControlFactory.buildNumberSlider(1, 4l, 500);
         lDivSlider.getSlider().setMinorTickCount(4);
         lDivSlider.getSlider().setMajorTickUnit(100);
         lDivSlider.getSlider().setBlockIncrement(1);
         lDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(this.lenCrop, 0l, 200);
+        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(1, 0l, 200);
         lCropSlider.getSlider().setMinorTickCount(4);
         lCropSlider.getSlider().setMajorTickUnit(25);
         lCropSlider.getSlider().setBlockIncrement(1);
 
-        NumberSliderControl pSlider = ControlFactory.buildNumberSlider(this._p, 0.01d, 10.0D);
+        NumberSliderControl pSlider = ControlFactory.buildNumberSlider(0.001, 0.01d, 10.0D);
         pSlider.getSlider().setMinorTickCount(4);
         pSlider.getSlider().setMajorTickUnit(5);
         pSlider.getSlider().setBlockIncrement(0.01);
 
-        NumberSliderControl qSlider = ControlFactory.buildNumberSlider(this._q, 0.01d, 50.0D);
+        NumberSliderControl qSlider = ControlFactory.buildNumberSlider(0.001, 0.01d, 50.0D);
         qSlider.getSlider().setMinorTickCount(4);
         qSlider.getSlider().setMajorTickUnit(5);
         qSlider.getSlider().setBlockIncrement(0.01);
 
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        ControlCategory geomControls = controlPanel.getGeometry();
         geomControls.addControls(
-                majRadSlider, minRadSlider, tRadSlider, 
+                majRadSlider, minRadSlider, 
+                tRadSlider, 
                 pSlider, qSlider,
-                lDivSlider, lCropSlider, wDivSlider, mCropSlider
+                lDivSlider, lCropSlider,
+                wDivSlider, mCropSlider
         );
-
-        this.controlPanel = ControlFactory.buildControlPanel(
-                ControlFactory.buildMeshViewCategory(
-                        this.drawMode,
-                        this.culling
-                ),
-                geomControls,
-                ControlFactory.buildTextureMeshCategory(this.textureType, this.colors,
-                        this.sectionType, this.textureImage,
-                        this.useBumpMap, this.bumpScale,
-                        this.bumpFineScale, this.invert,
-                        this.patterns, this.pattScale, 
-                        this.specColor, this.specularPower,  
-                        this.dens, this.func
-                )
-        );
-
+         
         return this.controlPanel;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 61 * hash + Objects.hashCode(this.wireRad);
-        hash = 61 * hash + Objects.hashCode(this.colorBinding);
+        hash = 61 * hash + Objects.hashCode(this.controlPanel);
         return hash;
     }
 
@@ -311,16 +296,7 @@ public class Knots extends TexturedMeshSample {
             return false;
         }
         final Knots other = (Knots) obj;
-        if (!Objects.equals(this.majRad, other.majRad)) {
-            return false;
-        }
-        if (!Objects.equals(this.minRad, other.minRad)) {
-            return false;
-        }
-        if (!Objects.equals(this.wireRad, other.wireRad)) {
-            return false;
-        }
-        if (!Objects.equals(this.wireLen, other.wireLen)) {
+        if (!Objects.equals(this.controlPanel, other.controlPanel)) {
             return false;
         }
         return true;

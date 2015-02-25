@@ -31,13 +31,10 @@ package org.fxyz.samples.shapes.texturedmeshes;
 
 import javafx.scene.Node;
 import org.fxmisc.easybind.EasyBind;
-import org.fxyz.controls.ControlCategory;
 import org.fxyz.controls.NumberSliderControl;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.TexturedMeshSample;
 import org.fxyz.shapes.primitives.ConeMesh;
-import org.reactfx.value.Val;
-import org.reactfx.value.Var;
 
 /**
  *
@@ -46,21 +43,12 @@ import org.reactfx.value.Var;
  */
 public class Cones extends TexturedMeshSample {
     
-    public static void main(String[] args){launch(args);}
-    
-    protected Val<Integer> divisions = Val.constant(64);
-    //protected Subscription divSubscriber = (Subscription) divisions.pin();
-    
-    protected Var<Double> radius = Var.newSimpleVar(50.0);
-    //protected Subscription radiusSubscriber = (Subscription) radius.pin();
-    
-    protected Var<Double> height = Var.newSimpleVar(75.0);
-    //protected Subscription heightSubscriber = (Subscription) height.pin();
-    
+    public static void main(String[] args){launch(args);}    
     
     @Override
     protected void createMesh() {
-        model = new ConeMesh(divisions.getValue(), radius.getValue(), height.getValue());
+        model = new ConeMesh(64, 50, 75);
+        group.getChildren().add(model);
     }
 
     @Override
@@ -70,43 +58,23 @@ public class Cones extends TexturedMeshSample {
 
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl divsSlider = ControlFactory.buildNumberSlider(null, .01D, 200D);
-        divsSlider.getSlider().setMinorTickCount(10);
-        divsSlider.getSlider().setMajorTickUnit(0.5);
-        divsSlider.getSlider().setBlockIncrement(0.01d);
-
-        NumberSliderControl heightSlider = ControlFactory.buildNumberSlider(null, .01D, 200D);
-        heightSlider.getSlider().setMinorTickCount(10);
-        heightSlider.getSlider().setMajorTickUnit(0.5);
-        heightSlider.getSlider().setBlockIncrement(0.01d);
+        controlPanel = ControlFactory.buildControlPanel();
         
-        NumberSliderControl radSlider = ControlFactory.buildNumberSlider(null, .01D, 200D);
-        radSlider.getSlider().setMinorTickCount(10);
-        radSlider.getSlider().setMajorTickUnit(0.5);
-        radSlider.getSlider().setBlockIncrement(0.01d);
+        NumberSliderControl divsSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
+        NumberSliderControl heightSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);        
+        NumberSliderControl radSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
-        geomControls.addControls(divsSlider,heightSlider,radSlider);
+        controlPanel.getGeometry().addControls(divsSlider,heightSlider,radSlider);
         
-        EasyBind.when(model.visibleProperty()).bind(((ConeMesh)model).divisionsProperty(), divsSlider.getSlider().valueProperty());
+        modelVisible = EasyBind.combine(
+        model.visibleProperty(), model.sceneProperty(),
+        (visible, scene) -> visible && scene != null);
         
-        this.controlPanel = ControlFactory.buildControlPanel(
-                ControlFactory.buildMeshViewCategory(
-                        this.drawMode,
-                        this.culling
-                ),
-                geomControls,
-                ControlFactory.buildTextureMeshCategory(this.textureType, this.colors, 
-                        null, this.textureImage,
-                        this.useBumpMap, this.bumpScale,
-                        this.bumpFineScale, this.invert,
-                        this.patterns, this.pattScale, 
-                        this.specColor, this.specularPower, 
-                        this.dens, this.func
-                )
-        );
+        EasyBind.when(modelVisible).bind(((ConeMesh)model).divisionsProperty(), divsSlider.getSlider().valueProperty());
+        EasyBind.when(modelVisible).bind(((ConeMesh)model).radiusProperty(), radSlider.getSlider().valueProperty());
+        EasyBind.when(modelVisible).bind(((ConeMesh)model).heightProperty(), heightSlider.getSlider().valueProperty());       
         
-        return this.controlPanel;
+        return controlPanel;
     }
 
    

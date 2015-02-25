@@ -136,22 +136,26 @@ public class SegmentedTorus extends TexturedMeshSample {
     
     @Override
     protected Node buildControlPanel() {
-        final NumberSliderControl majorRads = ControlFactory.buildNumberSlider(majRad, 1, 100);
-        final NumberSliderControl minorRads = ControlFactory.buildNumberSlider(minRad, 1, 100);
-        final NumberSliderControl majDivs = ControlFactory.buildNumberSlider(majorDivs, 8, 360);
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        final NumberSliderControl majorRads = ControlFactory.buildNumberSlider(0.01, 1, 100);
+        final NumberSliderControl minorRads = ControlFactory.buildNumberSlider(0.01, 1, 100);
+        final NumberSliderControl majDivs = ControlFactory.buildNumberSlider(0.01, 8, 360);
+        final NumberSliderControl minDivs = ControlFactory.buildNumberSlider(0.01, 8, 360);
+        final NumberSliderControl majRadsCrop = ControlFactory.buildNumberSlider(0.01, 0, 50);
+        
+        ControlCategory geomControls  = controlPanel.getGeometry();
         geomControls.addControls(
                 majorRads,
                 minorRads,
-                ControlFactory.buildNumberSlider(majorDivs, 8, 360),
-                ControlFactory.buildNumberSlider(minorDivs, 8, 360),
-                ControlFactory.buildNumberSlider(majRadCrop, 0, 50),
-                ControlFactory.buildNumberSlider(_x, -1, 1),
-                ControlFactory.buildNumberSlider(_y, -1, 1),
-                ControlFactory.buildNumberSlider(_z, 0.01, 100)
+                majDivs,
+                minDivs,
+                majRadsCrop,
+                ControlFactory.buildNumberSlider(0.01, -1, 1),
+                ControlFactory.buildNumberSlider(0.01, -1, 1),
+                ControlFactory.buildNumberSlider(0.01, 0.01, 100)
                 //ControlFactory.buildNumberSlider(_angle, 0.01, 359.89)                
         );
 
+        /*
         this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,
@@ -167,7 +171,7 @@ public class SegmentedTorus extends TexturedMeshSample {
                         this.dens, this.func
                 )
         );
-        
+        */
         return this.controlPanel;
     }
 

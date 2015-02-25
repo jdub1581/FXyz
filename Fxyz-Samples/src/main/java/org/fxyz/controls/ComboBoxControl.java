@@ -29,14 +29,9 @@
 
 package org.fxyz.controls;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -49,20 +44,8 @@ import javafx.scene.layout.VBox;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class ComboBoxControl<T> extends ControlBase<Property<T>> {
-
-    public ComboBoxControl(final String lbl, final Property<T> p, final Collection<T> items, boolean subControl) {
-        super("/org/fxyz/controls/ComboBoxControl.fxml", p);
-        title.setText(lbl);
-        selection.getItems().addAll(items);
-        selection.setValue(p.getValue());
-        controlledProperty.bind(selection.valueProperty());
-        if (subControl) {
-            subControlCache = FXCollections.observableHashMap();
-            this.usesSubControls.set(subControl);
-        }
-    }
-
+public class ComboBoxControl<T> extends ControlBase{
+    
     @FXML
     protected ComboBox<T> selection;
     @FXML
@@ -74,22 +57,52 @@ public class ComboBoxControl<T> extends ControlBase<Property<T>> {
     @FXML
     protected VBox subControls;
 
-    protected ObservableMap<T, List<ControlBase<Property<T>>>> subControlCache;
+    public ComboBoxControl(final String lbl, final Collection<T> items, boolean subControl) {
+        super("/org/fxyz/controls/ComboBoxControl.fxml");
+        title.setText(lbl);
+        selection.getItems().addAll(items);
+        
+        //controlledProperty.bind(selection.valueProperty());
+        if (subControl) {
+            //subControlCache = FXCollections.observableHashMap();
+            this.usesSubControls.set(subControl);
+        }
+    }
+
+    public ComboBox<T> getSelection() {
+        return selection;
+    }
+
+    public Label getTitle() {
+        return title;
+    }
+
+    public VBox getSubControls() {
+        return subControls;
+    }
+
+    public BooleanProperty getUsesSubControls() {
+        return usesSubControls;
+    }
+
+    
+
+    //protected ObservableMap<T, List<ControlBase<Property<T>>>> subControlCache;
 
     public void addSubControl(final ControlBase ... controls) {
         if (useSubControls()) {
-                subControlCache.putIfAbsent(selection.getValue(), Arrays.asList(controls));       
+                //subControlCache.putIfAbsent(selection.getValue(), Arrays.asList(controls));       
             //subControls.getChildren().add(subControlCache.get(control.controlledProperty));
         }
     }
 
-    protected ObservableMap<T, List<ControlBase<Property<T>>>> getSubControlCache() {
-        if (useSubControls()) {
-            return subControlCache;
-        } else {
-            return null;
-        }
-    }
+    //protected ObservableMap<T, List<ControlBase<Property<T>>>> getSubControlCache() {
+        //if (useSubControls()) {
+            //return subControlCache;
+        //} else {
+            //return null;
+        //}
+    //}
 
     private final BooleanProperty usesSubControls = new SimpleBooleanProperty(this, "usesSubControls", false) {
 

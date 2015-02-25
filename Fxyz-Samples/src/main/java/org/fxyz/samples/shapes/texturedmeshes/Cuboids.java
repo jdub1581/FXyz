@@ -97,30 +97,31 @@ public class Cuboids extends TexturedMeshSample{
 
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl widthSlider = ControlFactory.buildNumberSlider(this.width, .01D, 200D);
+        NumberSliderControl widthSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         widthSlider.getSlider().setMinorTickCount(10);
         widthSlider.getSlider().setMajorTickUnit(0.5);
         widthSlider.getSlider().setBlockIncrement(0.01d);
 
-        NumberSliderControl heightSlider = ControlFactory.buildNumberSlider(this.height, .01D, 200D);
+        NumberSliderControl heightSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         heightSlider.getSlider().setMinorTickCount(10);
         heightSlider.getSlider().setMajorTickUnit(0.5);
         heightSlider.getSlider().setBlockIncrement(0.01d);
         
-        NumberSliderControl depthSlider = ControlFactory.buildNumberSlider(this.depth, .01D, 200D);
+        NumberSliderControl depthSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         depthSlider.getSlider().setMinorTickCount(10);
         depthSlider.getSlider().setMajorTickUnit(0.5);
         depthSlider.getSlider().setBlockIncrement(0.01d);
         
-        NumberSliderControl levelSlider = ControlFactory.buildNumberSlider(this.level, 0, 8);
+        NumberSliderControl levelSlider = ControlFactory.buildNumberSlider(1, 0, 8);
         levelSlider.getSlider().setMinorTickCount(0);
         levelSlider.getSlider().setMajorTickUnit(1);
         levelSlider.getSlider().setBlockIncrement(1);
         levelSlider.getSlider().setSnapToTicks(true);
         
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        ControlCategory geomControls = controlPanel.getGeometry();
         geomControls.addControls(widthSlider,heightSlider,depthSlider,levelSlider);
 
+        /*
         this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,
@@ -135,7 +136,7 @@ public class Cuboids extends TexturedMeshSample{
                         this.specColor, this.specularPower, 
                         this.dens, this.func
                 )
-        );
+        );*/
         
         return this.controlPanel;
     }

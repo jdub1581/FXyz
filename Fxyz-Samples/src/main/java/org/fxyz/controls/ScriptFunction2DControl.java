@@ -29,9 +29,7 @@
 
 package org.fxyz.controls;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -39,8 +37,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ComboBox;
@@ -56,15 +52,15 @@ import javax.script.ScriptException;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class ScriptFunction2DControl extends ControlBase<Property<Function<Point2D,Number>>>{
+public class ScriptFunction2DControl extends ControlBase{
 
     private ObjectProperty<Function<Point2D,Number>> function = new SimpleObjectProperty<>();
     
     private BooleanProperty change=new SimpleBooleanProperty();
     private BooleanProperty error=new SimpleBooleanProperty();
     
-    public ScriptFunction2DControl(Property<Function<Point2D,Number>> prop, final Collection<String> items, boolean subControl) {
-        super("/org/fxyz/controls/ScriptFunction2DControl.fxml", prop);
+    public ScriptFunction2DControl(final Collection<String> items, boolean subControl) {
+        super("/org/fxyz/controls/ScriptFunction2DControl.fxml");
         
         Point2D p=new Point2D(1,2);
         res1.setText("p: {"+p.getX()+","+p.getY()+"}");
@@ -72,7 +68,7 @@ public class ScriptFunction2DControl extends ControlBase<Property<Function<Point
         selection.getItems().setAll(items);
         selection.getItems().add("Enter a valid expression");
         if (subControl) {
-            subControlCache = FXCollections.observableHashMap();
+            //subControlCache = FXCollections.observableHashMap();
             this.usesSubControls.set(subControl);
         }
         selection.getEditor().setEditable(false);
@@ -93,8 +89,6 @@ public class ScriptFunction2DControl extends ControlBase<Property<Function<Point
                     selection.getStyleClass().add("noEditable-textField");
                     change.set(true);
                 }
-                controlledProperty.unbind();
-                controlledProperty.bind(function);
             }
         });
         
@@ -150,22 +144,43 @@ public class ScriptFunction2DControl extends ControlBase<Property<Function<Point
     @FXML
     protected VBox subControls;
 
-    protected ObservableMap<String, List<ControlBase<Property<String>>>> subControlCache;
-
-    public void addSubControl(final ControlBase ... controls) {
-        if (useSubControls()) {
-                subControlCache.putIfAbsent(selection.getValue(), Arrays.asList(controls));       
-            //subControls.getChildren().add(subControlCache.get(control.controlledProperty));
-        }
+    public ObjectProperty<Function<Point2D, Number>> getFunction() {
+        return function;
     }
 
-    protected ObservableMap<String, List<ControlBase<Property<String>>>> getSubControlCache() {
-        if (useSubControls()) {
-            return subControlCache;
-        } else {
-            return null;
-        }
+    public BooleanProperty getChange() {
+        return change;
     }
+
+    public BooleanProperty getError() {
+        return error;
+    }
+
+    public Label getRes1() {
+        return res1;
+    }
+
+    public Label getRes2() {
+        return res2;
+    }
+
+    public ComboBox<String> getSelection() {
+        return selection;
+    }
+
+    public ScriptEngine getEngine() {
+        return engine;
+    }
+
+    public VBox getSubControls() {
+        return subControls;
+    }
+
+    public BooleanProperty getUsesSubControls() {
+        return usesSubControls;
+    }
+
+    
 
     private final BooleanProperty usesSubControls = new SimpleBooleanProperty(this, "usesSubControls", false) {
 

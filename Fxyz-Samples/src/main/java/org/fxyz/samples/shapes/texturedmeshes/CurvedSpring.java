@@ -46,7 +46,7 @@ import org.fxyz.shapes.primitives.CurvedSpringMesh;
  *
  * @author jpereda
  */
-public class CurvedSpring extends TexturedMeshSample {
+public class CurvedSpring extends TexturedMeshSample<CurvedSpringMesh> {
     
     public static void main(String[] args){
         CurvedSpring.launch(args);
@@ -156,61 +156,62 @@ public class CurvedSpring extends TexturedMeshSample {
     
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl majRadSlider = ControlFactory.buildNumberSlider(this.majorRadius, .01D, 200D);
+        NumberSliderControl majRadSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         majRadSlider.getSlider().setMinorTickCount(4);
         majRadSlider.getSlider().setMajorTickUnit(25);
         majRadSlider.getSlider().setBlockIncrement(1);
 
-        NumberSliderControl minRadSlider = ControlFactory.buildNumberSlider(this.minorRadius, .01D, 200D);
+        NumberSliderControl minRadSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         minRadSlider.getSlider().setMinorTickCount(4);
         minRadSlider.getSlider().setMajorTickUnit(25);
         minRadSlider.getSlider().setBlockIncrement(1);
 
-        NumberSliderControl tRadSlider = ControlFactory.buildNumberSlider(this.wireRadius, 0.01D, 25D);
+        NumberSliderControl tRadSlider = ControlFactory.buildNumberSlider(0.01, 0.01D, 25D);
         tRadSlider.getSlider().setMinorTickCount(4);
         tRadSlider.getSlider().setMajorTickUnit(10);
         tRadSlider.getSlider().setBlockIncrement(0.5d);
 
-        NumberSliderControl pitchSlider = ControlFactory.buildNumberSlider(this.pitch, 0.01D, 100D);
+        NumberSliderControl pitchSlider = ControlFactory.buildNumberSlider(0.01, 0.01D, 100D);
         pitchSlider.getSlider().setMinorTickCount(4);
         pitchSlider.getSlider().setMajorTickUnit(25);
         pitchSlider.getSlider().setBlockIncrement(0.5d);
 
-        NumberSliderControl lengthSlider = ControlFactory.buildNumberSlider(this.length, 0.01D, 1000D);
+        NumberSliderControl lengthSlider = ControlFactory.buildNumberSlider(1, 0.01D, 1000D);
         lengthSlider.getSlider().setMinorTickCount(4);
         lengthSlider.getSlider().setMajorTickUnit(50);
         lengthSlider.getSlider().setBlockIncrement(2d);
 
-        NumberSliderControl wDivSlider = ControlFactory.buildNumberSlider(this.wireDivs, 2, 500);
+        NumberSliderControl wDivSlider = ControlFactory.buildNumberSlider(1, 2, 500);
         wDivSlider.getSlider().setMinorTickCount(4);
         wDivSlider.getSlider().setMajorTickUnit(25);
         wDivSlider.getSlider().setBlockIncrement(1);
         wDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl mCropSlider = ControlFactory.buildNumberSlider(this.wireCrop, 0l, 248);
+        NumberSliderControl mCropSlider = ControlFactory.buildNumberSlider(1, 0l, 248);
         mCropSlider.getSlider().setMinorTickCount(4);
         mCropSlider.getSlider().setMajorTickUnit(25);
         mCropSlider.getSlider().setBlockIncrement(1);
         mCropSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl lDivSlider = ControlFactory.buildNumberSlider(this.lenDivs, 4l, 1000);
+        NumberSliderControl lDivSlider = ControlFactory.buildNumberSlider(1, 4l, 1000);
         lDivSlider.getSlider().setMinorTickCount(4);
         lDivSlider.getSlider().setMajorTickUnit(25);
         lDivSlider.getSlider().setBlockIncrement(1);
         lDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(this.lenCrop, 0l, 498);
+        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(1, 0l, 498);
         lCropSlider.getSlider().setMinorTickCount(4);
         lCropSlider.getSlider().setMajorTickUnit(25);
         lCropSlider.getSlider().setBlockIncrement(1);
         lCropSlider.getSlider().setSnapToTicks(true);
         
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        ControlCategory geomControls  = controlPanel.getGeometry();
         geomControls.addControls(majRadSlider, minRadSlider,
                 tRadSlider, pitchSlider, lengthSlider,
                 lDivSlider, wDivSlider, lCropSlider, mCropSlider);
+        
 
-        this.controlPanel = ControlFactory.buildControlPanel(
+        /*this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,
                         this.culling
@@ -225,7 +226,7 @@ public class CurvedSpring extends TexturedMeshSample {
                         this.specColor, this.specularPower,  
                         this.dens, this.func
                 )
-        );
+        );*/
         
         return this.controlPanel;
     }

@@ -29,7 +29,6 @@
 
 package org.fxyz.samples.utilities;
 
-import java.util.Arrays;
 import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -50,9 +49,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import org.fxyz.controls.CameraViewControl;
-import org.fxyz.controls.ComboBoxControl;
-import org.fxyz.controls.ControlPanel;
-import org.fxyz.controls.SectionLabel;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.ShapeBaseSample;
 import org.fxyz.scene.BillboardNode;
@@ -203,7 +199,7 @@ public class Billboarding extends ShapeBaseSample<BillBoard> {
         
         model.parentProperty().addListener(l->{
             if(model.getParent() != null){
-                final CameraViewControl camView = new CameraViewControl(useCameraView, subScene, mainPane);
+                final CameraViewControl camView = new CameraViewControl(subScene, mainPane);
                 camView.visibleProperty().bind(useCameraView);
         
                 StackPane.setAlignment(camView, Pos.BOTTOM_RIGHT);                
@@ -215,7 +211,13 @@ public class Billboarding extends ShapeBaseSample<BillBoard> {
 
     @Override
     protected Node buildControlPanel() {
-        ControlPanel panel = ControlFactory.buildSingleListControlPanel();
+        this.controlPanel = ControlFactory.controlPanelBuilder().build()
+                .withCategory(ControlFactory.buildSceneAndLightCategory());
+                //.withCategory(ControlFactory.buildMeshViewCategory(drawMode, culling))
+                //.withCategory(geomControls)
+                //.withCategory(ControlFactory.buildTextureMeshCategory(textureImage, dens, func));
+        
+       /* ControlPanel panel = ControlFactory.buildSingleListControlPanel();
         panel.addToRoot(
                 new SectionLabel("BillBoarding Properties"),
                 ControlFactory.buildCheckBoxControl(active),
@@ -223,9 +225,9 @@ public class Billboarding extends ShapeBaseSample<BillBoard> {
                 new SectionLabel("CameraView"),
                 ControlFactory.buildCheckBoxControl(useCameraView),
                 ControlFactory.buildCheckBoxControl(useSkybox)
-        );
+        );*/
 
-        return panel;
+        return controlPanel;
     }
 
 }

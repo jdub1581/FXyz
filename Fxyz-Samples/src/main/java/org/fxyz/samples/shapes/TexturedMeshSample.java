@@ -26,33 +26,20 @@
  */
 package org.fxyz.samples.shapes;
 
-import java.util.function.Function;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import org.fxyz.controls.TextureImage;
-import org.fxyz.geometry.Point3D;
-import org.fxyz.scene.paint.Patterns.CarbonPatterns;
 import org.fxyz.shapes.primitives.TexturedMesh;
-import org.fxyz.shapes.primitives.helper.TriangleMeshHelper;
-import org.fxyz.shapes.primitives.helper.TriangleMeshHelper.TextureType;
-import org.fxyz.tools.NormalMap;
 
 /**
  *
  * @author Jason Pollastrini aka jdub1581
+ * @param <M>
  */
-public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
+public abstract class TexturedMeshSample<M extends TexturedMesh> extends ShapeBaseSample<M> {
 
+    public TexturedMeshSample() {
+        super();        
+    }
+
+    /*
     //specific
     protected final Property<TriangleMeshHelper.SectionType> sectionType = new SimpleObjectProperty<TriangleMeshHelper.SectionType>(model, "secType", TriangleMeshHelper.SectionType.CIRCLE) {
         @Override
@@ -77,7 +64,7 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
                         }
                         break;
                     case IMAGE:
-                        model.setTextureModeImage(textureImage.getValue()==null?null:textureImage.getValue().getImage());
+                        model.setTextureModeImage(textureImage.getValue() == null ? null : textureImage.getValue().getImage());
                         if (useBumpMap.getValue() || invert.getValue()) {
                             useBumpMap.setValue(false);
                             invert.setValue(false);
@@ -120,7 +107,7 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
 
     /*
      TriangleMeshHelper.TextureType.NONE 
-     */
+     /
     protected final ObjectProperty<Color> colorBinding = new SimpleObjectProperty<Color>(Color.BROWN) {
         @Override
         protected void invalidated() {
@@ -142,7 +129,7 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
 
     /*
      TriangleMeshHelper.TextureType.IMAGE 
-     */
+     /
     protected final Property<TextureImage> textureImage = new SimpleObjectProperty(this, "Texture") {
         @Override
         protected void invalidated() {
@@ -176,7 +163,7 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
 
     /*
      TriangleMeshHelper.TextureType.PATTERN 
-     */
+     /
     protected final DoubleProperty pattScale = new SimpleDoubleProperty(this, "Pattern Scale: ", 2.0d) {
         @Override
         protected void invalidated() {
@@ -189,7 +176,7 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
 
     /*
      TriangleMeshHelper.TextureType.COLORED_VERTICES_3D 
-     */
+     /
     protected final DoubleProperty densMax = new SimpleDoubleProperty(this, "Density Scale: ");
     protected final Property<Function<Point3D, Number>> dens = new SimpleObjectProperty<Function<Point3D, Number>>(p -> p.x * p.y * p.z) {
         @Override
@@ -202,7 +189,7 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
     };
     /*
      TriangleMeshHelper.TextureType.COLORED_VERTICES_1D 
-     */
+     /
     protected final Property<Function<Number, Number>> func = new SimpleObjectProperty<Function<Number, Number>>(t -> t) {
         @Override
         protected void invalidated() {
@@ -319,5 +306,5 @@ public abstract class TexturedMeshSample extends ShapeBaseSample<TexturedMesh> {
         }
 
     };
-
+    */
 }

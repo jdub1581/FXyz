@@ -46,7 +46,7 @@ import org.fxyz.shapes.primitives.SpringMesh;
  *
  * @author jpereda
  */
-public class Springs extends TexturedMeshSample {
+public class Springs extends TexturedMeshSample<SpringMesh> {
 
     public static void main(String[] args) {
         Springs.launch(args);
@@ -144,55 +144,56 @@ public class Springs extends TexturedMeshSample {
 
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl meanRadSlider = ControlFactory.buildNumberSlider(this.meanRadius, .01D, 200D);
+        NumberSliderControl meanRadSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         meanRadSlider.getSlider().setMinorTickCount(4);
         meanRadSlider.getSlider().setMajorTickUnit(25);
         meanRadSlider.getSlider().setBlockIncrement(1d);
 
-        NumberSliderControl tRadSlider = ControlFactory.buildNumberSlider(this.wireRadius, 0.01D, 25D);
+        NumberSliderControl tRadSlider = ControlFactory.buildNumberSlider(0.01, 0.01D, 25D);
         tRadSlider.getSlider().setMinorTickCount(4);
         tRadSlider.getSlider().setMajorTickUnit(5);
         tRadSlider.getSlider().setBlockIncrement(0.5d);
 
-        NumberSliderControl pitchSlider = ControlFactory.buildNumberSlider(this.pitch, 0.01D, 20D);
+        NumberSliderControl pitchSlider = ControlFactory.buildNumberSlider(0.01, 0.01D, 20D);
         pitchSlider.getSlider().setMinorTickCount(4);
         pitchSlider.getSlider().setMajorTickUnit(5);
         pitchSlider.getSlider().setBlockIncrement(0.5d);
 
-        NumberSliderControl lengthSlider = ControlFactory.buildNumberSlider(this.length, 0.01D, 1000D);
+        NumberSliderControl lengthSlider = ControlFactory.buildNumberSlider(1, 0.01D, 1000D);
         lengthSlider.getSlider().setMinorTickCount(4);
         lengthSlider.getSlider().setMajorTickUnit(50);
         lengthSlider.getSlider().setBlockIncrement(2d);
 
-        NumberSliderControl wDivSlider = ControlFactory.buildNumberSlider(this.wireDivs, 2, 100);
+        NumberSliderControl wDivSlider = ControlFactory.buildNumberSlider(1, 2, 100);
         wDivSlider.getSlider().setMinorTickCount(4);
         wDivSlider.getSlider().setMajorTickUnit(10);
         wDivSlider.getSlider().setBlockIncrement(1);
         wDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl mCropSlider = ControlFactory.buildNumberSlider(this.wireCrop, 0l, 98);
+        NumberSliderControl mCropSlider = ControlFactory.buildNumberSlider(1, 0l, 98);
         mCropSlider.getSlider().setMinorTickCount(4);
         mCropSlider.getSlider().setMajorTickUnit(10);
         mCropSlider.getSlider().setBlockIncrement(1);
         mCropSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl lDivSlider = ControlFactory.buildNumberSlider(this.lenDivs, 4l, 1000);
+        NumberSliderControl lDivSlider = ControlFactory.buildNumberSlider(1, 4l, 1000);
         lDivSlider.getSlider().setMinorTickCount(4);
         lDivSlider.getSlider().setMajorTickUnit(10);
         lDivSlider.getSlider().setBlockIncrement(1);
         lDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(this.lenCrop, 0l, 200);
+        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(1, 0l, 200);
         lCropSlider.getSlider().setMinorTickCount(4);
         lCropSlider.getSlider().setMajorTickUnit(10);
         lCropSlider.getSlider().setBlockIncrement(1);
         lCropSlider.getSlider().setSnapToTicks(true);
 
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        ControlCategory geomControls  = controlPanel.getGeometry();
         geomControls.addControls(meanRadSlider,
                 tRadSlider, wDivSlider, pitchSlider, lengthSlider, mCropSlider,
                 lDivSlider, lCropSlider);
 
+        /*
         this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,
@@ -208,7 +209,7 @@ public class Springs extends TexturedMeshSample {
                         this.dens, this.func
                 )
         );
-
+*/      
         return this.controlPanel;
     }
 

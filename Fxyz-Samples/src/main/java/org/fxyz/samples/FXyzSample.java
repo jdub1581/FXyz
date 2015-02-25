@@ -36,10 +36,12 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.fxyz.FXyzSampleBase;
+import org.fxyz.controls.ControlPanel;
 import org.fxyz.samples.utilities.SkyBoxing;
 import org.fxyz.scene.Skybox;
+import org.reactfx.value.Val;
 
-public abstract class FXyzSample extends FXyzSampleBase {
+public abstract class FXyzSample<T> extends FXyzSampleBase {
 
     
     protected final ThreadFactory threadFactory;
@@ -53,8 +55,8 @@ public abstract class FXyzSample extends FXyzSampleBase {
             front = new Image(SkyBoxing.class.getResource("/org/fxyz/images/skyboxes/front.png").toExternalForm()),
             back = new Image(SkyBoxing.class.getResource("/org/fxyz/images/skyboxes/back.png").toExternalForm());
 
-    protected Skybox skyBox;
-    
+    protected Val<Skybox> skyBox;
+     
     protected double mousePosX;
     protected double mousePosY;
     protected double mouseOldX;
@@ -62,13 +64,14 @@ public abstract class FXyzSample extends FXyzSampleBase {
     protected double mouseDeltaX;
     protected double mouseDeltaY;
     
-    protected Node controlPanel;
+    protected ControlPanel controlPanel;
     
     public FXyzSample(){
         threadFactory = new SampleThreadFactory(getSampleName());
         if(serviceExecutor == null){
             serviceExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory);
         }
+        
     }
     
     @Override
@@ -136,7 +139,5 @@ public abstract class FXyzSample extends FXyzSampleBase {
             return t;
         }    
     }
-    
-    
     
 }

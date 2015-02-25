@@ -29,17 +29,11 @@
 
 package org.fxyz.samples.shapes.texturedmeshes;
 
-import java.util.function.Function;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.transform.Rotate;
-import org.fxyz.controls.ControlCategory;
+import org.fxmisc.easybind.EasyBind;
+import org.fxyz.controls.NumberSliderControl;
+import org.fxyz.controls.ScriptFunction2DControl;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.TexturedMeshSample;
 import org.fxyz.shapes.primitives.SurfacePlotMesh;
@@ -50,122 +44,46 @@ import org.fxyz.shapes.primitives.SurfacePlotMesh;
  */
 public class SurfacePlot extends TexturedMeshSample {
     public static void main(String[] args){SurfacePlot.launch(args);}
-    
-    //private static final Image image = new Image(SurfacePlot.class.getResourceAsStream(".../res/top.png"));
-    private final ObjectProperty<Function<Point2D, Number>> function2D = 
-            new SimpleObjectProperty<Function<Point2D, Number>>(model,"Function F(P(x,y))",p->Math.sin(p.magnitude())/p.magnitude()){
-        @Override
-        protected void invalidated() {
-            super.invalidated();
-            if (model != null) {
-                ((SurfacePlotMesh)model).setFunction2D(function2D.get());
-            }
-        }
-    };
-    private final DoubleProperty rangeX = new SimpleDoubleProperty(model, "Range X", 20) {
-        @Override
-        protected void invalidated() {
-            super.invalidated();
-            if (model != null) {
-                ((SurfacePlotMesh)model).setRangeX(rangeX.get());
-            }
-        }
-    };
-
-    private final DoubleProperty rangeY = new SimpleDoubleProperty(model, "Range Y", 20) {
-        @Override
-        protected void invalidated() {
-            super.invalidated();
-            if (model != null) {
-                ((SurfacePlotMesh)model).setRangeY(rangeY.get());
-            }
-        }
-    };
-
-    private final IntegerProperty divisionsX = new SimpleIntegerProperty(model, "Divisions X", 100) {
-        @Override
-        protected void invalidated() {
-            super.invalidated();
-            if (model != null) {
-                ((SurfacePlotMesh)model).setDivisionsX(divisionsX.get());
-            }
-        }
-    };
-    
-    private final IntegerProperty divisionsY = new SimpleIntegerProperty(model, "Divisions Y", 100) {
-        @Override
-        protected void invalidated() {
-            super.invalidated();
-            if (model != null) {
-                ((SurfacePlotMesh)model).setDivisionsY(divisionsY.get());
-            }
-        }
-    };
-    
-    private final DoubleProperty scale = new SimpleDoubleProperty(model, "Scale", 2) {
-        @Override
-        protected void invalidated() {
-            super.invalidated();
-            if (model != null) {
-                ((SurfacePlotMesh)model).setScale(scale.get());
-            }
-        }
-    };
-
-    
-    @Override
-    public void createMesh() {
-        model = new SurfacePlotMesh(function2D.get(),rangeX.get(),rangeY.get(),divisionsX.get(),divisionsY.get(),scale.get());        
-        model.getTransforms().addAll(new Rotate(0, Rotate.X_AXIS), rotateY);
-        model.sceneProperty().addListener(e->{
-            if(model.getScene()!= null){
-                //material.setDiffuseMap(image);
-            }
-        });
         
+    @Override
+    public void createMesh() {        
+        model = new SurfacePlotMesh(p->Math.sin(p.magnitude())/p.magnitude(), 20,20,100,100,2);        
+        model.getTransforms().addAll(new Rotate(0, Rotate.X_AXIS), rotateY);    
+        group.getChildren().add(model);         
     }
     
     @Override
     protected void addMeshAndListeners() {
+        
     }
     
     @Override
-    protected Node buildControlPanel() {
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
-        geomControls.addControls(
-                ControlFactory.buildScriptFunction2DControl(function2D),
-                ControlFactory.buildNumberSlider(rangeX, 0, 100),
-                ControlFactory.buildNumberSlider(rangeY, 0, 100),
-                ControlFactory.buildNumberSlider(divisionsX, 1, 1000),
-                ControlFactory.buildNumberSlider(divisionsY, 1, 1000),
-                ControlFactory.buildNumberSlider(scale, 0.01, 100)
-        );
-
-        this.controlPanel = ControlFactory.buildControlPanel(
-                ControlFactory.buildMeshViewCategory(
-                        this.drawMode,
-                        this.culling
-                ),
-                geomControls,
-                ControlFactory.buildTextureMeshCategory(this.textureType,
-                        this.colors,
-                        null,
-                        this.textureImage,
-                        this.useBumpMap, 
-                        this.bumpScale,
-                        this.bumpFineScale, 
-                        this.invert,
-                        this.patterns,
-                        this.pattScale,
-                        this.specColor, 
-                        this.specularPower, 
-                        this.dens,
-                        this.func
-                )
-        );
+    protected Node buildControlPanel() {                
+        this.controlPanel = ControlFactory.buildControlPanel();
         
-        return this.controlPanel;
+        ScriptFunction2DControl func = ControlFactory.buildScriptFunction2DControl();
+        NumberSliderControl rx = ControlFactory.buildNumberSlider(0.01, 1, 100);
+        NumberSliderControl ry = ControlFactory.buildNumberSlider(0.01, 1, 100);
+        NumberSliderControl dx = ControlFactory.buildNumberSlider(1, 1, 500);
+        NumberSliderControl dy = ControlFactory.buildNumberSlider(1, 1, 500);
+        NumberSliderControl s  = ControlFactory.buildNumberSlider(0.01, 0.01, 100);
+               
+        controlPanel.getGeometry().addControls(func,rx,ry,dx,dy,s);
+        
+        modelVisible = EasyBind.combine(
+        model.visibleProperty(), model.sceneProperty(),
+        (visible, scene) -> visible && scene != null);
+        
+        EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).function2DProperty(), func.functionProperty());        
+        EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).rangeXProperty(), rx.getSlider().valueProperty());
+        EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).rangeYProperty(), ry.getSlider().valueProperty());
+        EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).divisionsXProperty(), dx.getSlider().valueProperty());
+        EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).divisionsYProperty(), dy.getSlider().valueProperty());
+        EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).scaleProperty(), s.getSlider().valueProperty()); 
+        
+        return controlPanel;
     }
+    
 
     
     

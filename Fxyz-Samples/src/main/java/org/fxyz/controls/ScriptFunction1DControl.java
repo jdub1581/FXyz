@@ -29,9 +29,7 @@
 
 package org.fxyz.controls;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -39,8 +37,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -55,15 +51,15 @@ import javax.script.ScriptException;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class ScriptFunction1DControl extends ControlBase<Property<Function<Number,Number>>>{
+public class ScriptFunction1DControl extends ControlBase{
 
     private ObjectProperty<Function<Number,Number>> function = new SimpleObjectProperty<>();
     
     private BooleanProperty change=new SimpleBooleanProperty();
     private BooleanProperty error=new SimpleBooleanProperty();
     
-    public ScriptFunction1DControl(Property<Function<Number,Number>> prop, final Collection<String> items, boolean subControl) {
-        super("/org/fxyz/controls/ScriptFunction1DControl.fxml", prop);
+    public ScriptFunction1DControl(final Collection<String> items, boolean subControl) {
+        super("/org/fxyz/controls/ScriptFunction1DControl.fxml");
         
        Double x=1d;
         res1.setText("x: {"+x+"}");
@@ -71,7 +67,7 @@ public class ScriptFunction1DControl extends ControlBase<Property<Function<Numbe
         selection.getItems().setAll(items);
         selection.getItems().add("Enter a valid expression");
         if (subControl) {
-            subControlCache = FXCollections.observableHashMap();
+            //subControlCache = FXCollections.observableHashMap();
             this.usesSubControls.set(subControl);
         }
         selection.getEditor().setEditable(false);
@@ -91,8 +87,6 @@ public class ScriptFunction1DControl extends ControlBase<Property<Function<Numbe
                     selection.getStyleClass().add("noEditable-textField");
                     change.set(true);
                 }
-                controlledProperty.unbind();
-                controlledProperty.bindBidirectional(function);
             }
         });
         
@@ -151,22 +145,43 @@ public class ScriptFunction1DControl extends ControlBase<Property<Function<Numbe
     @FXML
     protected VBox subControls;
 
-    protected ObservableMap<String, List<ControlBase<Property<String>>>> subControlCache;
-
-    public void addSubControl(final ControlBase ... controls) {
-        if (useSubControls()) {
-                subControlCache.putIfAbsent(selection.getValue(), Arrays.asList(controls));       
-            //subControls.getChildren().add(subControlCache.get(control.controlledProperty));
-        }
+    public ObjectProperty<Function<Number, Number>> getFunction() {
+        return function;
     }
 
-    protected ObservableMap<String, List<ControlBase<Property<String>>>> getSubControlCache() {
-        if (useSubControls()) {
-            return subControlCache;
-        } else {
-            return null;
-        }
+    public BooleanProperty getChange() {
+        return change;
     }
+
+    public BooleanProperty getError() {
+        return error;
+    }
+
+    public Label getRes1() {
+        return res1;
+    }
+
+    public Label getRes2() {
+        return res2;
+    }
+
+    public ComboBox<String> getSelection() {
+        return selection;
+    }
+
+    public ScriptEngine getEngine() {
+        return engine;
+    }
+
+    public VBox getSubControls() {
+        return subControls;
+    }
+
+    public BooleanProperty getUsesSubControls() {
+        return usesSubControls;
+    }
+
+    
 
     private final BooleanProperty usesSubControls = new SimpleBooleanProperty(this, "usesSubControls", false) {
 

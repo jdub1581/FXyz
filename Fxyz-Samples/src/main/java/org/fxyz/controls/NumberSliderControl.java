@@ -30,9 +30,6 @@
 package org.fxyz.controls;
 
 import java.text.NumberFormat;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.Property;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -43,50 +40,8 @@ import javafx.scene.layout.StackPane;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class NumberSliderControl extends ControlBase<Property<Number>> {
+public class NumberSliderControl extends ControlBase{
     
-    private final NumberFormat format = NumberFormat.getInstance();
-    
-    public NumberSliderControl(final Property<Number> prop, final Number lowerBound, final Number upperBound) {
-        super("/org/fxyz/controls/NumberSliderControl.fxml", prop);
-        
-        if(prop instanceof IntegerProperty){
-            format.setMaximumFractionDigits(0);
-            valSlider.setMin(lowerBound.intValue());
-            valSlider.setMax(upperBound.intValue());
-        }
-        else if(prop instanceof DoubleProperty){
-            format.setMaximumFractionDigits(2);
-            valSlider.setMin(lowerBound.doubleValue());
-            valSlider.setMax(upperBound.doubleValue());
-        }
-        valueLabel.textProperty().bindBidirectional(valSlider.valueProperty(),format);
-        if(controlledProperty==null){
-            return;
-        }
-        valSlider.setValue(controlledProperty.getValue().doubleValue());
-        
-        // PENDING
-//        valSlider.valueProperty().addListener((ov,i,i1)->{
-//            if(!valSlider.isValueChanging()){
-//                controlledProperty.setValue(i1);
-//            }
-//        });
-//        valSlider.valueChangingProperty().addListener((ov,b,b1)->{
-//            if(!b1){
-//               controlledProperty.setValue(valSlider.getValue());
-//            }
-//        });
-        controlledProperty.bind(valSlider.valueProperty());
-        propName.setText(!controlledProperty.getName().isEmpty() ? controlledProperty.getName() : "Empty Property Name:");
-      
-        
-    }
-
-    public Slider getSlider() {
-        return valSlider;
-    }
-
     @FXML
     private Label propName;
     @FXML
@@ -95,5 +50,63 @@ public class NumberSliderControl extends ControlBase<Property<Number>> {
     private Label valueLabel;
     @FXML
     private Slider valSlider;
+    
+    private final NumberFormat format = NumberFormat.getInstance();
+    
+    public NumberSliderControl(final Number precision, final Number lowerBound, final Number upperBound) {
+        super("/org/fxyz/controls/NumberSliderControl.fxml");
+        
+        valSlider.setBlockIncrement(precision.doubleValue());
+        
+        if(precision instanceof Integer){
+            format.setMaximumFractionDigits(0);
+            valSlider.setMin(lowerBound.intValue());
+            valSlider.setMax(upperBound.intValue());
+        }
+        else if(precision instanceof Double){
+            format.setMaximumFractionDigits(2);
+            valSlider.setMin(lowerBound.doubleValue());
+            valSlider.setMax(upperBound.doubleValue());
+        }
+        valueLabel.textProperty().bind(valSlider.valueProperty().asString());
+                
+        // PENDING
+//        valSlider.valueProperty().addListener((ov,i,i1)->{
+//            if(!valSlider.isValueChanging()){
+//                model.setValue(i1);
+//            }
+//        });
+//        valSlider.valueChangingProperty().addListener((ov,b,b1)->{
+//            if(!b1){
+//               model.setValue(valSlider.getValue());
+//            }
+//        });
+        //controlledProperty.bind(valSlider.valueProperty());
+        //propName.setText(!model.getName().isEmpty() ? model.getName() : "Empty Property Name:");
+      
+        
+    }
+
+    public Slider getSlider() {
+        return valSlider;
+    }
+
+    public Label getPropName() {
+        return propName;
+    }
+
+    public Label getValueLabel() {
+        return valueLabel;
+    }
+
+    public Slider getValSlider() {
+        return valSlider;
+    }
+
+    public NumberFormat getFormat() {
+        return format;
+    }
+
+    
 
 }

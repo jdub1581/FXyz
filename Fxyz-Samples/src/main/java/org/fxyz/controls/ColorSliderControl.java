@@ -30,9 +30,7 @@
 package org.fxyz.controls;
 
 import java.text.NumberFormat;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -47,20 +45,18 @@ import javafx.scene.paint.Color;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class ColorSliderControl extends ControlBase<Property<Number>> {
-
-    public enum PrecisionString {
-        DEFAULT,
-        D_2,
-        D_4,
-        INT;
-
-        private PrecisionString() {
-        }
-    }
+public class ColorSliderControl extends ControlBase{
     
-    private final NumberFormat format = NumberFormat.getInstance();
+    @FXML
+    private Label propName;
+    @FXML
+    private StackPane spacer;
+    @FXML
+    private Label valueLabel;
+    @FXML
+    private Slider valSlider;
     
+    private final NumberFormat format = NumberFormat.getInstance();    
     private final StringProperty colorBinding = new SimpleStringProperty();
     private final IntegerProperty colors = new SimpleIntegerProperty(this, "Colors", 1530){
 
@@ -74,28 +70,28 @@ public class ColorSliderControl extends ControlBase<Property<Number>> {
         
     };
     
-    public ColorSliderControl(final Property<Number> prop, final Number lowerBound, final Number upperBound) {
-        super("/org/fxyz/controls/ColorSliderControl.fxml", prop);
+    public ColorSliderControl(final Number lowerBound, final Number upperBound) {
+        super("/org/fxyz/controls/ColorSliderControl.fxml");
         valSlider.getStyleClass().add("texture-slider");
-        if(prop instanceof IntegerProperty){
+        //if(prop instanceof IntegerProperty){
             format.setMaximumFractionDigits(0);
             valSlider.setMin(lowerBound.intValue());
             valSlider.setMax(upperBound.intValue());
-        }
-        else if(prop instanceof DoubleProperty){
+        //}
+        //else if(prop instanceof DoubleProperty){
             format.setMaximumFractionDigits(2);
             valSlider.setMin(lowerBound.doubleValue());
             valSlider.setMax(upperBound.doubleValue());
-        }
+        //}
         valueLabel.textProperty().bind(colorBinding);
-        if(controlledProperty==null){
+        if(model==null){
             return;
         }
-        valSlider.setValue(controlledProperty.getValue().doubleValue());
+        //valSlider.setValue(model.getValue().doubleValue());
         
         colors.bind(valSlider.valueProperty());
-        controlledProperty.bind(valSlider.valueProperty());
-        propName.setText(!controlledProperty.getName().isEmpty() ? controlledProperty.getName() : "Empty Property Name:");
+        //controlledProperty.bind(valSlider.valueProperty());
+       // propName.setText(!model.getName().isEmpty() ? model.getName() : "Empty Property Name:");
         
         valSlider.setShowTickLabels(false);
         valSlider.setShowTickMarks(false);
@@ -106,13 +102,25 @@ public class ColorSliderControl extends ControlBase<Property<Number>> {
         return valSlider;
     }
 
-    @FXML
-    private Label propName;
-    @FXML
-    private StackPane spacer;
-    @FXML
-    private Label valueLabel;
-    @FXML
-    private Slider valSlider;
+    public NumberFormat getFormat() {
+        return format;
+    }
 
+    public StringProperty getColorBinding() {
+        return colorBinding;
+    }
+
+    public IntegerProperty getColors() {
+        return colors;
+    }
+
+    public Label getPropName() {
+        return propName;
+    }
+
+    public Label getValueLabel() {
+        return valueLabel;
+    }
+
+    
 }

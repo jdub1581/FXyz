@@ -30,15 +30,13 @@
 package org.fxyz.controls;
 
 import java.util.Collection;
-import java.util.function.Function;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.shape.CullFace;
+import javafx.scene.shape.DrawMode;
 import org.fxmisc.easybind.EasyBind;
 import org.fxyz.controls.factory.ControlFactory;
-import org.fxyz.geometry.Point3D;
-import org.fxyz.scene.paint.Patterns.CarbonPatterns;
 import org.fxyz.shapes.primitives.helper.TriangleMeshHelper.TextureType;
 
 /**
@@ -54,25 +52,23 @@ public class TextureTypeControl extends ComboBoxControl<TextureType>{
             texture03 = new TextureImage(TextureTypeControl.class.getResource("/org/fxyz/images/textures/tiled.jpg").toExternalForm(),"Tiled"),
             texture04 = new TextureImage(TextureTypeControl.class.getResource("/org/fxyz/images/textures/water.jpg").toExternalForm(),"Water"),
             texture05 = new TextureImage(TextureTypeControl.class.getResource("/org/fxyz/images/textures/metal-scale-tile.jpg").toExternalForm(),"Metal Tile");
-    protected final ObservableList<TextureImage> textures;
     
-    protected ColorSliderControl colorSlider;
+    protected final ObservableList<TextureImage> textures; 
     
-    protected ImagePreviewControl diffMapControl;  
-    
+    protected ColorSliderControl colorSlider;    
+    protected ImagePreviewControl diffMapControl;      
     protected NumberSliderControl patternScaler;
-    protected ComboBoxControl patternChooser;
-    
+    protected ComboBoxControl patternChooser;    
     protected ScriptFunction3DControl densFunct;
-    protected ScriptFunction1DControl funcFunct;
-    
+    protected ScriptFunction1DControl funcFunct;    
     protected ColorSliderControl specColor;
-    protected NumberSliderControl specSlider;
-    
+    protected NumberSliderControl specSlider;    
     protected CheckBoxControl bumpMap;
     protected CheckBoxControl invertBumpMap;
     protected NumberSliderControl bumpScale;
-    protected NumberSliderControl bumpFine;    
+    protected NumberSliderControl bumpFine; 
+    protected ComboBoxControl<CullFace> cullFace;
+    protected ComboBoxControl<DrawMode> drawMode;
     
     private final BooleanBinding 
             useColorSlider,
@@ -85,64 +81,33 @@ public class TextureTypeControl extends ComboBoxControl<TextureType>{
             useSpecPower,
             useBumpMapping;
     
-    public TextureTypeControl(String lbl, 
-            Property<TextureType> type, 
-            Collection<TextureType> items,
-            final Property<Number> colors,
-            final Property<TextureImage> diffMap,
-            final Property<Boolean> bmpMap,
-            final Property<Number> bmpScale,
-            final Property<Number> bmpFineScale,
-            final Property<Boolean> invBmp,
-            final Property<CarbonPatterns> patt,
-            final Property<Number> pScale,
-            final Property<Number> spColor,
-            final Property<Number> specP,
-            final Property<Function<Point3D,Number>> densFunc,
-            final Property<Function<Number,Number>> funcFunc
+    public TextureTypeControl(
+            final String lbl, 
+            final Collection<TextureType> items
     ) {
-        super(lbl, type, items, true);
-        this.textures = FXCollections.observableArrayList(texture01,texture02,texture03,texture04, texture05);
+        super(lbl, items, true);
+        this.textures = FXCollections.observableArrayList(texture01,texture02,texture03,texture04, texture05);        
+        buildSubControls();
         
-        buildSubControls(
-                colors,
-                diffMap,
-                bmpMap,bmpScale,bmpFineScale,invBmp,
-                pScale, patt, 
-                spColor, specP, 
-                densFunc, funcFunc
-        );
-        
-        
-        this.useColorSlider = selection.valueProperty().isEqualTo(TextureType.NONE);
-        
-        this.useImage = selection.valueProperty().isEqualTo(TextureType.IMAGE);
-        
+        this.useColorSlider = selection.valueProperty().isEqualTo(TextureType.NONE);        
+        this.useImage = selection.valueProperty().isEqualTo(TextureType.IMAGE);        
         this.usePatternChooser = selection.valueProperty().isEqualTo(TextureType.PATTERN);
-        this.usePatternScaler = selection.valueProperty().isEqualTo(TextureType.PATTERN);   
-        
+        this.usePatternScaler = selection.valueProperty().isEqualTo(TextureType.PATTERN);          
         this.useBumpMapping = selection.valueProperty().isEqualTo(TextureType.IMAGE)
-                .or(selection.valueProperty().isEqualTo(TextureType.PATTERN));
-        
+                .or(selection.valueProperty().isEqualTo(TextureType.PATTERN));        
         this.useDensScriptor = selection.valueProperty().isEqualTo(TextureType.COLORED_VERTICES_3D);
-        this.useFuncScriptor = selection.valueProperty().isEqualTo(TextureType.COLORED_VERTICES_1D);
-        
+        this.useFuncScriptor = selection.valueProperty().isEqualTo(TextureType.COLORED_VERTICES_1D);        
         this.useSpecColor = selection.valueProperty().isNotNull();
         this.useSpecPower = selection.valueProperty().isNotNull();
         
-        EasyBind.includeWhen(subControls.getChildren(), colorSlider, useColorSlider);
-        
-        EasyBind.includeWhen(subControls.getChildren(), diffMapControl, useImage);
-        
+        EasyBind.includeWhen(subControls.getChildren(), colorSlider, useColorSlider);        
+        EasyBind.includeWhen(subControls.getChildren(), diffMapControl, useImage);        
         EasyBind.includeWhen(subControls.getChildren(), patternChooser, usePatternChooser);
-        EasyBind.includeWhen(subControls.getChildren(), patternScaler, usePatternScaler);
-        
+        EasyBind.includeWhen(subControls.getChildren(), patternScaler, usePatternScaler);        
         EasyBind.includeWhen(subControls.getChildren(), densFunct, useDensScriptor);
-        EasyBind.includeWhen(subControls.getChildren(), funcFunct, useFuncScriptor);
-        
+        EasyBind.includeWhen(subControls.getChildren(), funcFunct, useFuncScriptor);        
         EasyBind.includeWhen(subControls.getChildren(), specColor, useSpecColor);
-        EasyBind.includeWhen(subControls.getChildren(), specSlider, useSpecPower);
-        
+        EasyBind.includeWhen(subControls.getChildren(), specSlider, useSpecPower);        
         EasyBind.includeWhen(subControls.getChildren(), bumpMap, useBumpMapping);//.or(diffMapControl.getImageSelector().valueProperty().isNotEqualTo(animatedWater)));
         EasyBind.includeWhen(subControls.getChildren(), invertBumpMap, useBumpMapping);//.or(diffMapControl.getImageSelector().valueProperty().isNotEqualTo(animatedWater)));
         EasyBind.includeWhen(subControls.getChildren(), bumpScale, useBumpMapping);//.or(diffMapControl.getImageSelector().valueProperty().isNotEqualTo(animatedWater)));
@@ -154,47 +119,148 @@ public class TextureTypeControl extends ComboBoxControl<TextureType>{
         return true;
     }
 
-    private void buildSubControls(
-            final Property<Number> colors,
-            final Property<TextureImage> img, 
-            final Property<Boolean> bmpMap,
-            final Property<Number> bmpScale,
-            final Property<Number> bmpFineScale,
-            final Property<Boolean> invBmp, 
-            final Property<Number> pScale, 
-            final Property<CarbonPatterns> patt,
-            final Property<Number> spColor,
-            final Property<Number> specP,
-            final Property<Function<Point3D,Number>> densFunc,
-            final Property<Function<Number,Number>> funcFunc
-    ) {
-        /*
-            Lay out controls in the order you want them to be seen
-        */
-        diffMapControl = ControlFactory.buildImageViewToggle(img, "Image", textures);
+    private void buildSubControls() {
+      
+        this.drawMode = ControlFactory.buildDrawModeControl();
+        this.cullFace = ControlFactory.buildCullFaceControl();
         
-        patternChooser = ControlFactory.buildPatternChooser(patt);
-        patternScaler = ControlFactory.buildNumberSlider(pScale, 1, 100);        
+        this.diffMapControl = ControlFactory.buildImageViewToggle("Image", textures);        
+        this.patternChooser = ControlFactory.buildPatternChooser();
+        this.patternScaler = ControlFactory.buildNumberSlider(0.01, 1, 100);   
+        
         // only if image or pattern        
-        bumpMap = ControlFactory.buildCheckBoxControl(bmpMap);
-        
-        invertBumpMap = ControlFactory.buildCheckBoxControl(invBmp);
-        bumpScale = ControlFactory.buildNumberSlider(bmpScale, 0, 100);
-        bumpFine = ControlFactory.buildNumberSlider(bmpFineScale, 0.01, 100);
+        this.bumpMap = ControlFactory.buildCheckBoxControl();        
+        this.invertBumpMap = ControlFactory.buildCheckBoxControl();
+        this.bumpScale = ControlFactory.buildNumberSlider(0.01, 0, 100);
+        this.bumpFine = ControlFactory.buildNumberSlider(0.01, 0.01, 100);        
         // only if texture none
-        colorSlider = ControlFactory.buildColorSliderControl(colors, 0l, 1530l);
-        //
-               
-        densFunct = ControlFactory.buildScriptFunction3DControl(densFunc);
-        funcFunct = ControlFactory.buildScriptFunction1DControl(funcFunc);
-        
-        specColor = new ColorSliderControl(spColor, 0, 1530);
-        specColor.setPrefSize(USE_COMPUTED_SIZE, USE_PREF_SIZE);
-        specSlider = ControlFactory.buildNumberSlider(specP, 32, 10000);
+        this.colorSlider = ControlFactory.buildColorSliderControl(0l, 1530l);
+        //                       
+        this.densFunct = ControlFactory.buildScriptFunction3DControl();
+        this.funcFunct = ControlFactory.buildScriptFunction1DControl();        
+        this.specColor = new ColorSliderControl(0, 1530);
+        this.specColor.setPrefSize(USE_COMPUTED_SIZE, USE_PREF_SIZE);
+        this.specSlider = ControlFactory.buildNumberSlider(1, 32, 10000);
     }
 
     public void  resetBumpMap() {
-        bumpMap.setSelected(false);
+        this.bumpMap.setSelected(false);
+    }
+
+    public static TextureImage getTexture01() {
+        return texture01;
+    }
+
+    public static TextureImage getTexture02() {
+        return texture02;
+    }
+
+    public static TextureImage getTexture03() {
+        return texture03;
+    }
+
+    public static TextureImage getTexture04() {
+        return texture04;
+    }
+
+    public static TextureImage getTexture05() {
+        return texture05;
+    }
+
+    public ObservableList<TextureImage> getTextures() {
+        return textures;
+    }
+
+    public ColorSliderControl getColorSlider() {
+        return colorSlider;
+    }
+
+    public ImagePreviewControl getDiffMapControl() {
+        return diffMapControl;
+    }
+
+    public NumberSliderControl getPatternScaler() {
+        return patternScaler;
+    }
+
+    public ComboBoxControl getPatternChooser() {
+        return patternChooser;
+    }
+
+    public ScriptFunction3DControl getDensFunct() {
+        return densFunct;
+    }
+
+    public ScriptFunction1DControl getFuncFunct() {
+        return funcFunct;
+    }
+
+    public ColorSliderControl getSpecColor() {
+        return specColor;
+    }
+
+    public NumberSliderControl getSpecSlider() {
+        return specSlider;
+    }
+
+    public CheckBoxControl getBumpMap() {
+        return bumpMap;
+    }
+
+    public CheckBoxControl getInvertBumpMap() {
+        return invertBumpMap;
+    }
+
+    public NumberSliderControl getBumpScale() {
+        return bumpScale;
+    }
+
+    public NumberSliderControl getBumpFine() {
+        return bumpFine;
+    }
+
+    public ComboBoxControl<CullFace> getCullFace() {
+        return cullFace;
+    }
+
+    public ComboBoxControl<DrawMode> getDrawMode() {
+        return drawMode;
+    }
+        
+    public BooleanBinding getUseColorSlider() {
+        return useColorSlider;
+    }
+
+    public BooleanBinding getUseImage() {
+        return useImage;
+    }
+
+    public BooleanBinding getUseDensScriptor() {
+        return useDensScriptor;
+    }
+
+    public BooleanBinding getUseFuncScriptor() {
+        return useFuncScriptor;
+    }
+
+    public BooleanBinding getUsePatternChooser() {
+        return usePatternChooser;
+    }
+
+    public BooleanBinding getUsePatternScaler() {
+        return usePatternScaler;
+    }
+
+    public BooleanBinding getUseSpecColor() {
+        return useSpecColor;
+    }
+
+    public BooleanBinding getUseSpecPower() {
+        return useSpecPower;
+    }
+
+    public BooleanBinding getUseBumpMapping() {
+        return useBumpMapping;
     }
     
     

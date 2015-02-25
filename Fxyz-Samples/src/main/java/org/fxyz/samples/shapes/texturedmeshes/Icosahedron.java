@@ -80,21 +80,21 @@ public class Icosahedron extends TexturedMeshSample {
     
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl diameterSlider = ControlFactory.buildNumberSlider(this.diameter, .01D, 200D);
+        NumberSliderControl diameterSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         diameterSlider.getSlider().setMinorTickCount(4);
         diameterSlider.getSlider().setMajorTickUnit(25);
         diameterSlider.getSlider().setBlockIncrement(1d);
         
-        NumberSliderControl levelSlider = ControlFactory.buildNumberSlider(this.level, 0, 8);
+        NumberSliderControl levelSlider = ControlFactory.buildNumberSlider(1, 0, 8);
         levelSlider.getSlider().setMinorTickCount(0);
         levelSlider.getSlider().setMajorTickUnit(1);
         levelSlider.getSlider().setBlockIncrement(1);
         levelSlider.getSlider().setSnapToTicks(true);
         
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        ControlCategory geomControls  = controlPanel.getGeometry();
         geomControls.addControls(diameterSlider,levelSlider);
 
-        this.controlPanel = ControlFactory.buildControlPanel(
+        /*this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,
                         this.culling
@@ -109,7 +109,7 @@ public class Icosahedron extends TexturedMeshSample {
                         this.specColor, this.specularPower, 
                         this.dens, this.func
                 )
-        );
+        );*/
         
         return this.controlPanel;
     }

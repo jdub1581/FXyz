@@ -164,67 +164,41 @@ public class BezierMeshes extends GroupOfTexturedMeshSample {
         }));
     }
 
-    @Override
-    public String getSampleDescription() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nBezierMesh:\nAllows for a Tubular mesh to be built using a BezierCurve method ")
-                .append("allowing the use of control points in 3D space.");
-        return sb.toString();
-    }
 
     @Override
     protected Node buildControlPanel() {
-        NumberSliderControl radSlider = ControlFactory.buildNumberSlider(wireRad, 0.1D, 0.5D);
+        NumberSliderControl radSlider = ControlFactory.buildNumberSlider(0.01, 0.1D, 0.5D);
         radSlider.getSlider().setMinorTickCount(4);
         radSlider.getSlider().setMajorTickUnit(0.5);
         radSlider.getSlider().setBlockIncrement(0.1d);
         radSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl rDivSlider = ControlFactory.buildNumberSlider(this.rDivs, 2, 100);
+        NumberSliderControl rDivSlider = ControlFactory.buildNumberSlider(1, 2, 100);
         rDivSlider.getSlider().setMinorTickCount(25);
         rDivSlider.getSlider().setMajorTickUnit(99);
         rDivSlider.getSlider().setBlockIncrement(1);
         rDivSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl rCropSlider = ControlFactory.buildNumberSlider(this.wireCrop, 0, 98);
+        NumberSliderControl rCropSlider = ControlFactory.buildNumberSlider(1, 0, 98);
         rCropSlider.getSlider().setMinorTickCount(48);
         rCropSlider.getSlider().setMajorTickUnit(49);
         rCropSlider.getSlider().setBlockIncrement(1);
         rCropSlider.getSlider().setSnapToTicks(true);
 
-        NumberSliderControl tDivSlider = ControlFactory.buildNumberSlider(this.tDivs, 4l, 250);
+        NumberSliderControl tDivSlider = ControlFactory.buildNumberSlider(1, 4l, 250);
         tDivSlider.getSlider().setMinorTickCount(50);
         tDivSlider.getSlider().setMajorTickUnit(250);
         tDivSlider.getSlider().setBlockIncrement(1);
 
-        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(this.lengthCrop, 0l, 200);
+        NumberSliderControl lCropSlider = ControlFactory.buildNumberSlider(1, 0l, 200);
         lCropSlider.getSlider().setMinorTickCount(0);
         lCropSlider.getSlider().setMajorTickUnit(0.5);
         lCropSlider.getSlider().setBlockIncrement(1);
 
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
-        geomControls.addControls(ControlFactory.buildCheckBoxControl(showKnots),
-                ControlFactory.buildCheckBoxControl(showControlPoints),
-                radSlider,rDivSlider,rCropSlider,tDivSlider,lCropSlider);
-        this.controlPanel = ControlFactory.buildControlPanel(
-                ControlFactory.buildMeshViewCategory(
-                        this.drawMode,
-                        this.culling
-                ),
-                geomControls,
-                ControlFactory.buildTextureMeshCategory(this.textureType, this.colors, 
-                        this.sectionType, this.textureImage,
-                        this.useBumpMap, this.bumpScale,
-                        this.bumpFineScale, this.invert,
-                        this.patterns, this.pattScale, 
-                        this.specColor, this.specularPower, 
-                        this.dens, this.func
-                )
-        );
+        ControlCategory geomControls = controlPanel.getGeometry();
+        geomControls.addControls();
         
-        return this.controlPanel;
-        
-        
+        return this.controlPanel;        
     }
 
 }

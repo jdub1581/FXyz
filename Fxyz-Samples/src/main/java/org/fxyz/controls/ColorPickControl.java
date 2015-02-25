@@ -29,11 +29,9 @@
 
 package org.fxyz.controls;
 
-import javafx.beans.property.Property;
 import javafx.fxml.FXML;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 
 /**
  *
@@ -46,11 +44,19 @@ public class ColorPickControl extends ControlBase{
     @FXML
     private Label title;
     
-    public ColorPickControl(Property<Color> prop, String name) {
-        super("/org/fxyz/controls/ColorControl.fxml", prop);
-        colors.setValue(prop.getValue());
-        prop.bindBidirectional(colors.valueProperty());
+    public ColorPickControl(String name) {
+        super("/org/fxyz/controls/ColorControl.fxml");
+        //colors.setValue(prop.getValue());
+        //prop.bindBidirectional(colors.valueProperty());
         title.setText(name);
+    }
+
+    public ColorPicker getColors() {
+        return colors;
+    }
+
+    public Label getTitle() {
+        return title;
     }
     
 }

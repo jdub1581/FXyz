@@ -30,13 +30,11 @@
 package org.fxyz.controls;
 
 import java.util.Collection;
-import javafx.beans.property.Property;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
@@ -45,7 +43,7 @@ import javafx.util.Callback;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class ImagePreviewControl extends ControlBase<Property<TextureImage>> {
+public class ImagePreviewControl extends ControlBase{
 
     @FXML
     private ImageView preview;
@@ -53,10 +51,10 @@ public class ImagePreviewControl extends ControlBase<Property<TextureImage>> {
     private ComboBox<TextureImage> imageSelector;
     
 
-    public ImagePreviewControl(final Property<TextureImage> img, String name, final Collection<TextureImage> items) {
-        super("/org/fxyz/controls/ImageMapPreview.fxml", img);
+    public ImagePreviewControl(String name, final Collection<TextureImage> items) {
+        super("/org/fxyz/controls/ImageMapPreview.fxml");
        
-        imageSelector.getItems().addAll(items);
+        imageSelector.setItems(FXCollections.observableArrayList(items));
         imageSelector.getSelectionModel().selectedItemProperty().addListener((obs,t,t1)->{
             preview.setImage(t1.getImage());
         });
@@ -100,8 +98,8 @@ public class ImagePreviewControl extends ControlBase<Property<TextureImage>> {
         });
         
 //        preview.imageProperty().bind(imageSelector.getSelectionModel().getSelectedItem().imageProperty());
-        if(controlledProperty!=null){
-            controlledProperty.bind(imageSelector.valueProperty());
+        if(model!=null){
+            //controlledProperty.bind(imageSelector.valueProperty());
         }
         preview.setOnMouseClicked(e->imageSelector.show());
     }

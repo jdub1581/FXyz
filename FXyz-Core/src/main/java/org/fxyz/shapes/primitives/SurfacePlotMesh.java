@@ -51,11 +51,11 @@ public class SurfacePlotMesh extends TexturedMesh {
 
     private static final Function<Point2D,Number> DEFAULT_FUNCTION = p->Math.sin(p.magnitude())/p.magnitude();
     
-    private static final double DEFAULT_X_RANGE = 10; // -5 +5
-    private static final double DEFAULT_Y_RANGE = 10; // -5 +5
-    private static final int DEFAULT_X_DIVISIONS = 64;
-    private static final int DEFAULT_Y_DIVISIONS = 64;
-    private static final double DEFAULT_SCALE = 1.0D;
+    private static final double DEFAULT_X_RANGE = 20; // -5 +5
+    private static final double DEFAULT_Y_RANGE = 20; // -5 +5
+    private static final int DEFAULT_X_DIVISIONS = 100;
+    private static final int DEFAULT_Y_DIVISIONS = 100;
+    private static final double DEFAULT_SCALE = 2.0D;
     
     public SurfacePlotMesh() {
         this(DEFAULT_FUNCTION,DEFAULT_X_RANGE,DEFAULT_Y_RANGE,DEFAULT_X_DIVISIONS, DEFAULT_Y_DIVISIONS,DEFAULT_SCALE);
@@ -89,13 +89,15 @@ public class SurfacePlotMesh extends TexturedMesh {
 
     @Override
     protected final void updateMesh(){       
-        setMesh(null);
+        //setMesh(null);
         mesh=createPlotMesh(
             getFunction2D(), 
             getRangeX(),getRangeY(),
             getDivisionsX(),getDivisionsY(), 
             getScale());
-        setMesh(mesh);
+        if(getMesh() == null){
+            setMesh(mesh);
+        }
     }
     
     private final ObjectProperty<Function<Point2D, Number>> function2D = new SimpleObjectProperty<Function<Point2D, Number>>(DEFAULT_FUNCTION){
@@ -225,7 +227,7 @@ public class SurfacePlotMesh extends TexturedMesh {
     
     
     private TriangleMesh createPlotMesh(Function<Point2D,Number> function2D, double rangeX, double rangeY, int divisionsX, int divisionsY, double scale) {
-    
+        
         listVertices.clear();
         listTextures.clear();
         listFaces.clear();
@@ -241,7 +243,7 @@ public class SurfacePlotMesh extends TexturedMesh {
             float dy = (float)(-rangeY/2d + ((float)y /(float)divisionsY)*rangeY);
             for (int x = 0; x <= divisionsX; x++) {
                 float dx = (float)(-rangeX/2d + ((float)x /(float)divisionsX)*rangeX);
-                    pointY = (float)scale*function2D.apply(new Point2D(dx,dy)).floatValue();
+                    pointY = (float)scale * function2D.apply(new Point2D(dx,dy)).floatValue();
                     listVertices.add(new Point3D(dx, pointY, dy));
             }
         }

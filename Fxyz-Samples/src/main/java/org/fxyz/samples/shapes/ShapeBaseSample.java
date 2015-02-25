@@ -29,6 +29,7 @@ package org.fxyz.samples.shapes;
 import com.sun.javafx.geom.Vec3d;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
+import javafx.beans.binding.Binding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -52,7 +53,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.CullFace;
@@ -67,12 +67,13 @@ import org.controlsfx.control.HiddenSidesPane;
 import org.fxmisc.easybind.EasyBind;
 import org.fxmisc.easybind.Subscription;
 import org.fxyz.client.ModelInfoTracker;
-import org.fxyz.controls.ControlPanel;
-import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.FXyzSample;
 import org.fxyz.scene.Skybox;
 import org.fxyz.shapes.primitives.TexturedMesh;
 import org.fxyz.utils.CameraTransformer;
+import org.reactfx.collection.LiveArrayList;
+import org.reactfx.collection.LiveList;
+import org.reactfx.value.Var;
 
 /**
  * + mainPane resizable StackPane ++ subScene SubScene, with camera +++ root
@@ -81,11 +82,12 @@ import org.fxyz.utils.CameraTransformer;
  * @author jpereda
  * @param <T>
  */
-public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
+public abstract class ShapeBaseSample<T extends Node> extends FXyzSample<T> {
 
     protected abstract void createMesh();
-
     protected abstract void addMeshAndListeners();
+    
+    protected final LiveList<Subscription> subscriptions = new LiveArrayList<>();
 
     private final double sceneWidth = 600;
     private final double sceneHeight = 600;
@@ -131,10 +133,12 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
     //Bindings..
     Subscription modelWidthBinder, modelHeightBinder, modelDepthBinder;
     Subscription sceneActiveBinder;
+   
+    protected Binding<Boolean> modelVisible;
 
     public ShapeBaseSample() {
         numberFormat.setMaximumFractionDigits(1);
-        
+
         initSample();
     }
 
@@ -147,14 +151,14 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
         buildSubScenePane();
         buildParentPane();
 
-        createListeners();        
+        createListeners();
     }
 
     private void releaseBinders() {
-        if(modelWidthBinder != null){
-        modelWidthBinder.unsubscribe();
-        modelHeightBinder.unsubscribe();
-        modelDepthBinder.unsubscribe();
+        if (modelWidthBinder != null) {
+            modelWidthBinder.unsubscribe();
+            modelHeightBinder.unsubscribe();
+            modelDepthBinder.unsubscribe();
         }
     }
 
@@ -190,7 +194,7 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
     }
 
     private void buildSkybox() {
-        skyBox = new Skybox(
+        skyBox =Var.newSimpleVar(new Skybox(
                 top,
                 bottom,
                 left,
@@ -199,9 +203,9 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
                 back,
                 100000,
                 camera
-        );
-        skyBox.visibleProperty().bind(useSkybox);
-        root.getChildren().add(0, skyBox);
+        ));
+        skyBox.getValue().visibleProperty().bind(useSkybox);
+        root.getChildren().add(0, skyBox.getValue());
     }
 
     private void buildCamera() {
@@ -388,12 +392,10 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
                         createMesh();
                         return null;
                     }
-
+                    
                 };
             }
 
-            
-            
             @Override
             protected void failed() {
                 super.failed();
@@ -404,7 +406,7 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
             protected void succeeded() {
                 addMeshAndListeners();
                 attachBinders();
-                
+
                 mainPane.getChildren().remove(progressBar);
 
                 if (model != null && model instanceof MeshView) {
@@ -417,38 +419,8 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
                     }
                 }
 
-                if (model != null) {
-                    group.getChildren().add(model);
-                } else {
-                    throw new UnsupportedOperationException("Model returned Null ... ");
-                }
-
-                if (controlPanel != null && ((ControlPanel) controlPanel).getPanes().filtered(t -> t.getText().contains("lighting")).isEmpty()) {
-                    ((ControlPanel) controlPanel).getPanes().add(0, ControlFactory.buildSceneAndLightCategory(
-                            useSkybox,
-                            sceneLight1.lightOnProperty(), sceneLight2.lightOnProperty(),
-                            sceneLight1.colorProperty(), sceneLight2.colorProperty(),
-                            sceneLight1.translateXProperty(), sceneLight2.translateXProperty(),
-                            light1Group.rotateProperty(), light2Group.rotateProperty(),
-                            light1Group.rotationAxisProperty(), light1Group.rotationAxisProperty()
-                    ));
-                    exportButton = new Button("Export Mesh");
-                    exportButton.setFocusTraversable(false);
-                    exportButton.visibleProperty().addListener(l -> {
-                        if (exportButton.isVisible()) {
-                            if (exportButton.getParent() != null) {
-                                exportButton.setMinWidth(((VBox) exportButton.getParent()).getPrefWidth());
-                                exportButton.autosize();
-                            }
-                        }
-                    });
-                    //HBox expContainer = new HBox(exportButton);
-                    //expContainer.setPrefSize(USE_COMPUTED_SIZE, USE_PREF_SIZE);
-                    //HBox.setHgrow(exportButton, Priority.ALWAYS);
-
-                    ((VBox) controlPanel).getChildren().add(exportButton);
-                    ((ControlPanel) controlPanel).getPanes().get(0).setExpanded(true);
-
+                if (model != null) {                    
+                    
                     // setup model information
                     modelInfo.getTimeToBuild().setText(String.valueOf(System.currentTimeMillis() - time) + "ms");
                     if (model instanceof Group) {
@@ -463,7 +435,7 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
                     }
 
                     modelInfo.getSampleTitle().setText(getSampleName());
-                    
+
                 }
             }
         };
@@ -480,17 +452,9 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
         progressBar.setPrefSize(mainPane.getPrefWidth() * 0.5, USE_PREF_SIZE);
         progressBar.setProgress(-1);
         mainPane.getChildren().add(progressBar);
+
         
-        parentPane.parentProperty().addListener(l->{
-            if(parentPane.getScene() != null){
-                if(model != null){
-                    attachBinders();
-                }
-            }else{
-                releaseBinders();
-            }
-        });
-        
+
         return parentPane;
     }
 
@@ -500,7 +464,7 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample {
 
     @Override
     public Node getControlPanel() {
-        return buildControlPanel() != null ? buildControlPanel() : null;
+        return buildControlPanel();
     }
 
     @Override

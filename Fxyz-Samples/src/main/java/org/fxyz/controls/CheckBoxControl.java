@@ -29,6 +29,7 @@
 
 package org.fxyz.controls;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.Property;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -38,31 +39,25 @@ import javafx.scene.control.CheckBox;
  *
  * @author Jason Pollastrini aka jdub1581
  */
-public class CheckBoxControl extends ControlBase<Property<Boolean>>{
+public class CheckBoxControl extends ControlBase{
 
+    protected BooleanBinding valueBinding;
     
-    public CheckBoxControl(Property<Boolean> prop) {
-        super("/org/fxyz/controls/CheckBoxControl.fxml", prop);
-        loadBindings();
+    
+    public CheckBoxControl(){
+        this(null);
+    }
+    
+    public CheckBoxControl(final Property<Boolean> b) {
+        super("/org/fxyz/controls/CheckBoxControl.fxml");
+        
     }
 
     @FXML
     private CheckBox checkBox;
-    public final void loadBindings() {
-        if(controlledProperty==null){
-            return;
-        }
-        checkBox.selectedProperty().addListener(l->{
-            if(checkBox != null){
-                controlledProperty.setValue(checkBox.isSelected());
-            }
-        });
-        controlledProperty.addListener(l->{
-            if(controlledProperty.getValue() != checkBox.isSelected()){
-                setSelected(controlledProperty.getValue());
-            }
-        });
-        checkBox.setText(!controlledProperty.getName().isEmpty() ? controlledProperty.getName() : "Empty Name");
+
+    public CheckBox getCheckBox() {
+        return checkBox;
     }
     
     public void setSelected(boolean value){

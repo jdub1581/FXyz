@@ -57,7 +57,7 @@ import org.fxyz.shapes.primitives.PrismMesh;
  *
  * @author jpereda
  */
-public class Prisms extends TexturedMeshSample{
+public class Prisms extends TexturedMeshSample<PrismMesh>{
     
     public static void main(String[] args){
         launch(args);
@@ -182,16 +182,16 @@ public class Prisms extends TexturedMeshSample{
         });
     }
 
-    private final CheckBoxControl chkKnots = ControlFactory.buildCheckBoxControl(showKnots);
-    private final CheckBoxControl chkEnablePicking = ControlFactory.buildCheckBoxControl(enablePicking);
-    private final CheckBoxControl chkPickingOnDragging = ControlFactory.buildCheckBoxControl(pickingOnDragging);
+    private final CheckBoxControl chkKnots = ControlFactory.buildCheckBoxControl();
+    private final CheckBoxControl chkEnablePicking = ControlFactory.buildCheckBoxControl();
+    private final CheckBoxControl chkPickingOnDragging = ControlFactory.buildCheckBoxControl();
         
     @Override
     protected Node buildControlPanel() {
         chkEnablePicking.disableProperty().bind(showKnots.not());
         chkPickingOnDragging.disableProperty().bind(showKnots.not().or(enablePicking.not()));
       
-        NumberSliderControl radiusSlider = ControlFactory.buildNumberSlider(this.radius, .01D, 200D);
+        NumberSliderControl radiusSlider = ControlFactory.buildNumberSlider(0.01, .01D, 200D);
         radiusSlider.getSlider().setMinorTickCount(10);
         radiusSlider.getSlider().setMajorTickUnit(0.5);
         radiusSlider.getSlider().setBlockIncrement(0.01d);
@@ -201,16 +201,16 @@ public class Prisms extends TexturedMeshSample{
 //        heightSlider.getSlider().setMajorTickUnit(0.5);
 //        heightSlider.getSlider().setBlockIncrement(0.01d);
         
-        NumberSliderControl levelSlider = ControlFactory.buildNumberSlider(this.level, 0, 8);
+        NumberSliderControl levelSlider = ControlFactory.buildNumberSlider(1, 0, 8);
         levelSlider.getSlider().setMinorTickCount(0);
         levelSlider.getSlider().setMajorTickUnit(1);
         levelSlider.getSlider().setBlockIncrement(1);
         levelSlider.getSlider().setSnapToTicks(true);
         
-        ControlCategory geomControls = ControlFactory.buildCategory("Geometry");
+        ControlCategory geomControls  = controlPanel.getGeometry();
         geomControls.addControls(chkKnots,chkEnablePicking,chkPickingOnDragging,
                 radiusSlider,levelSlider);
-
+        /*
         this.controlPanel = ControlFactory.buildControlPanel(
                 ControlFactory.buildMeshViewCategory(
                         this.drawMode,
@@ -226,7 +226,7 @@ public class Prisms extends TexturedMeshSample{
                         this.dens, this.func
                 )
         );
-        
+        */
         return this.controlPanel;
     }
 

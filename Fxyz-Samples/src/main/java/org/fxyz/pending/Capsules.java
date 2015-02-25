@@ -36,7 +36,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Camera;
 import javafx.scene.Node;
 import org.fxyz.controls.ControlCategory;
-import org.fxyz.controls.ControlPanel;
 import org.fxyz.controls.NumberSliderControl;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.ShapeBaseSample;
@@ -72,13 +71,13 @@ public class Capsules extends ShapeBaseSample implements CameraAdapter{
     @Override
     public Node getControlPanel() {
         
-        NumberSliderControl radSlider = ControlFactory.buildNumberSlider(rad, 1.0d, 24.0d);
+        NumberSliderControl radSlider = ControlFactory.buildNumberSlider(0.01, 1.0d, 24.0d);
         radSlider.getSlider().setMinorTickCount(22);
         radSlider.getSlider().setMajorTickUnit(23);
         radSlider.getSlider().setBlockIncrement(1);
         radSlider.getSlider().setSnapToTicks(true);       
         
-        NumberSliderControl heightSlider = ControlFactory.buildNumberSlider(height, 10.0d, 34.0d);
+        NumberSliderControl heightSlider = ControlFactory.buildNumberSlider(0.01, 10.0d, 34.0d);
         heightSlider.getSlider().setMajorTickUnit(24);
         heightSlider.getSlider().setMinorTickCount(22);        
         heightSlider.getSlider().setBlockIncrement(1);
@@ -88,10 +87,8 @@ public class Capsules extends ShapeBaseSample implements CameraAdapter{
         geomControls.addControls(radSlider, heightSlider);
         geomControls.setExpanded(true);
 
-        ControlPanel cPanel = ControlFactory.buildControlPanel(geomControls);
-        cPanel.setExpandedPane(geomControls);
 
-        return cPanel;
+        return null;
     }
 
     @Override
