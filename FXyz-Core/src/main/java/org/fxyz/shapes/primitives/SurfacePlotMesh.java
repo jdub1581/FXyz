@@ -37,7 +37,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
-import javafx.scene.DepthTest;
 import javafx.scene.shape.CullFace;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.TriangleMesh;
@@ -74,30 +73,24 @@ public class SurfacePlotMesh extends TexturedMesh {
     }
 
     public SurfacePlotMesh(Function<Point2D,Number> function, double rangeX, double rangeY, int divisionsX, int divisionsY, double scale) {
-        setFunction2D(function);
-        setRangeX(rangeX);
-        setRangeY(rangeY);
-        setDivisionsX(divisionsX);
-        setDivisionsY(divisionsY);
-        setScale(scale);
         
-        updateMesh();
-        setCullFace(CullFace.BACK);
+        this.mesh=createPlotMesh(function, rangeX, rangeY, divisionsX, divisionsY, scale);
+        setMesh(mesh);
+        
+        setCullFace(CullFace.NONE);
         setDrawMode(DrawMode.FILL);
-        setDepthTest(DepthTest.ENABLE);
     }
 
     @Override
-    protected final void updateMesh(){       
+    protected final void updateMesh(){        
         setMesh(null);
         mesh=createPlotMesh(
             getFunction2D(), 
             getRangeX(),getRangeY(),
             getDivisionsX(),getDivisionsY(), 
-            getScale());
-        if(getMesh() == null){
-            setMesh(mesh);
-        }
+            getScale()
+        );
+        setMesh(mesh);
     }
     
     private final ObjectProperty<Function<Point2D, Number>> function2D = new SimpleObjectProperty<Function<Point2D, Number>>(DEFAULT_FUNCTION){
@@ -227,7 +220,7 @@ public class SurfacePlotMesh extends TexturedMesh {
     
     
     private TriangleMesh createPlotMesh(Function<Point2D,Number> function2D, double rangeX, double rangeY, int divisionsX, int divisionsY, double scale) {
-        
+    
         listVertices.clear();
         listTextures.clear();
         listFaces.clear();
@@ -243,7 +236,7 @@ public class SurfacePlotMesh extends TexturedMesh {
             float dy = (float)(-rangeY/2d + ((float)y /(float)divisionsY)*rangeY);
             for (int x = 0; x <= divisionsX; x++) {
                 float dx = (float)(-rangeX/2d + ((float)x /(float)divisionsX)*rangeX);
-                    pointY = (float)scale * function2D.apply(new Point2D(dx,dy)).floatValue();
+                    pointY = (float)scale*function2D.apply(new Point2D(dx,dy)).floatValue();
                     listVertices.add(new Point3D(dx, pointY, dy));
             }
         }

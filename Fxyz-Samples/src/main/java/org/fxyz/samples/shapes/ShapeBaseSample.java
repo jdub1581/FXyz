@@ -135,11 +135,12 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample<T> {
     Subscription sceneActiveBinder;
    
     protected Binding<Boolean> modelVisible;
+    protected Binding<Boolean> hasControls;
 
     public ShapeBaseSample() {
         numberFormat.setMaximumFractionDigits(1);
 
-        initSample();
+        initSample();       
     }
 
     private void initSample() {
@@ -162,11 +163,16 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample<T> {
         }
     }
 
-    private void attachBinders() {
+    protected void attachBindings() {
         // should be conditional on scene not being null
         EasyBind.subscribe(model.boundsInParentProperty(), (s) -> modelInfo.getBoundsWidth().setText(numberFormat.format(s.getWidth())));
         EasyBind.subscribe(model.boundsInParentProperty(), (s) -> modelInfo.getBoundsHeight().setText(numberFormat.format(s.getHeight())));
         EasyBind.subscribe(model.boundsInParentProperty(), (s) -> modelInfo.getBoundsDepth().setText(numberFormat.format(s.getDepth())));
+        
+        EasyBind.when(modelVisible).bind(sceneLight1.lightOnProperty(), controlPanel.getLights().getLight1Controls().getL1On().selectedProperty());
+        EasyBind.when(modelVisible).bind(sceneLight2.lightOnProperty(), controlPanel.getLights().getLight2Controls().getL1On().selectedProperty());
+        
+        
     }
 
     private void createListeners() {
@@ -405,8 +411,7 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample<T> {
             @Override
             protected void succeeded() {
                 addMeshAndListeners();
-                attachBinders();
-
+                
                 mainPane.getChildren().remove(progressBar);
 
                 if (model != null && model instanceof MeshView) {
@@ -435,7 +440,8 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample<T> {
                     }
 
                     modelInfo.getSampleTitle().setText(getSampleName());
-
+                    
+                    attachBindings();
                 }
             }
         };
@@ -444,6 +450,12 @@ public abstract class ShapeBaseSample<T extends Node> extends FXyzSample<T> {
         service.start();
     }
 
+    protected Binding<Boolean> checkModel(){
+        return EasyBind.combine(
+        model.visibleProperty(), model.sceneProperty(),
+        (visible, scene) -> visible && scene != null);
+    }
+    
     @Override
     public Node getSample() {
         loadSample();

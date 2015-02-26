@@ -38,16 +38,17 @@ import org.fxyz.controls.factory.ControlFactory;
 public class ControlPanel extends VBox {
     
     private final ControlBasePane accordion;
-    protected final ControlCategory lights;
+    protected final LightingCategory lights;
     protected final ControlCategory geometry;
-    protected final ControlCategory texType;
+    protected final TextureCategory texType;
+    
 
     public ControlPanel() {
         this.accordion = new ControlBasePane();
         
-        lights = (ControlFactory.buildSceneAndLightCategory());
-        geometry = (ControlFactory.buildCategory("Mesh Geometry"));
-        texType = (ControlFactory.buildTextureMeshCategory());
+        this.lights = new LightingCategory();
+        this.geometry = (ControlFactory.buildCategory("Mesh Geometry"));
+        this.texType = new TextureCategory();
         
         this.accordion.getPanes().addAll(lights, geometry, texType);
         VBox.setVgrow(accordion, Priority.ALWAYS);
@@ -63,7 +64,7 @@ public class ControlPanel extends VBox {
         return this;
     }
 
-    public ControlCategory getLights() {
+    public LightingCategory getLights() {
         return lights;
     }
 
@@ -71,4 +72,10 @@ public class ControlPanel extends VBox {
         return geometry;
     }
 
+    public TextureCategory getTextureTypes() {
+        return texType;
+    }
+
+    
+    
 }

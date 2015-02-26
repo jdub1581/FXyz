@@ -85,7 +85,7 @@ public final class ControlFactory {
     }
 
     public static final ColorSliderControl buildColorSliderControl(final Number lb, final Number ub) {
-        return new ColorSliderControl(lb, ub);
+        return new ColorSliderControl("",lb, ub);
     }
 
     public static final ColorPickControl buildColorControl(String name) {
@@ -99,7 +99,7 @@ public final class ControlFactory {
      List like Items
      ==========================================================================*/
 
-    public static final ComboBoxControl buildCullFaceControl() {
+    public static final ComboBoxControl<CullFace> buildCullFaceControl() {
         return new ComboBoxControl("Cull Face: ", Arrays.asList(CullFace.values()), false);
     }
 
@@ -111,7 +111,7 @@ public final class ControlFactory {
         return new TextureTypeControl("Texture Type:", Arrays.asList(TextureType.values()));
     }
 
-    public static final ComboBoxControl buildPatternChooser() {
+    public static final ComboBoxControl<CarbonPatterns> buildPatternChooser() {
         return new ComboBoxControl("Carbon Patterns: ", Arrays.asList(CarbonPatterns.values()), false);
     }
 
@@ -170,7 +170,6 @@ public final class ControlFactory {
                 lighting1,
                 lighting2,
                 new CheckBoxControl());
-
         return mvc;
     }
 

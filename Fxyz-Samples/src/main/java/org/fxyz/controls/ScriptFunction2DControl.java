@@ -37,6 +37,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ComboBox;
@@ -102,29 +104,32 @@ public class ScriptFunction2DControl extends ControlBase{
                 change.set(true);
             }
         });
-        change.addListener((obs,b,b1)->{
-            if(b1){
-                change.set(false);
-                String text=selection.getValue();
-                if(!selection.getEditor().getText().isEmpty()){
-                    text=selection.getEditor().getText();
-                }
-                @SuppressWarnings("unchecked")
-                Function<Point2D,Number> f;
-                try {
-                    f = (Function<Point2D,Number>)engine.eval(
-                            String.format("new java.util.function.Function(%s)", "function(p) "+text));
-                    // check if f is a valid function
-                    try{
-                        res2.setText("val: "+String.format("%.3f", f.apply(p)));
-                        error.set(false);
-                        function.set(f);
-                    } catch(Exception e){
-                        res2.setText("val: error");
-                        error.set(true);
+        change.addListener(new ChangeListener<Boolean>() {
+
+            public void changed(ObservableValue<? extends Boolean> obs, Boolean b, Boolean b1) {
+                if(b1){
+                    change.set(false);
+                    String text=selection.getValue();
+                    if(!selection.getEditor().getText().isEmpty()){
+                        text=selection.getEditor().getText();
                     }
-                } catch (RuntimeException | ScriptException ex) {
-                    System.err.println("Script Error "+ex);
+                    @SuppressWarnings("unchecked")
+                            Function<Point2D,Number> f;
+                    try {
+                        f = (Function<Point2D,Number>)engine.eval(
+                                String.format("new java.util.function.Function(%s)", "function(p) "+text));
+                        // check if f is a valid function
+                        try{
+                            res2.setText("val: "+String.format("%.3f", f.apply(p)));
+                            error.set(false);
+                            function.set(f);
+                        } catch(Exception e){
+                            res2.setText("val: error");
+                            error.set(true);
+                        }
+                    } catch (RuntimeException | ScriptException ex) {
+                        System.err.println("Script Error "+ex);
+                    }
                 }
             }
         });

@@ -36,7 +36,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.transform.Rotate;
-import org.fxyz.controls.ControlCategory;
 import org.fxyz.controls.NumberSliderControl;
 import org.fxyz.controls.factory.ControlFactory;
 import org.fxyz.samples.shapes.TexturedMeshSample;
@@ -213,10 +212,6 @@ public class Knots extends TexturedMeshSample<KnotMesh> {
         
     }
 
-    @Override
-    public String getSampleDescription() {
-        return "Knots, they tie things together ;)";
-    }
 
     @Override
     protected Node buildControlPanel() {
@@ -268,8 +263,7 @@ public class Knots extends TexturedMeshSample<KnotMesh> {
         qSlider.getSlider().setMajorTickUnit(5);
         qSlider.getSlider().setBlockIncrement(0.01);
 
-        ControlCategory geomControls = controlPanel.getGeometry();
-        geomControls.addControls(
+        controlPanel.getGeometry().addControls(
                 majRadSlider, minRadSlider, 
                 tRadSlider, 
                 pSlider, qSlider,

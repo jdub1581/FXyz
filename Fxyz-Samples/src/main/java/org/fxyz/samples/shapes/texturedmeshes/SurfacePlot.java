@@ -47,7 +47,7 @@ public class SurfacePlot extends TexturedMeshSample {
         
     @Override
     public void createMesh() {        
-        model = new SurfacePlotMesh(p->Math.sin(p.magnitude())/p.magnitude(), 20.0,20.0,100,100,2.0);        
+        model = new SurfacePlotMesh(((p)->Math.sin(p.magnitude())/p.magnitude()), 20.0, 20.0, 100, 100, 2.0);        
         model.getTransforms().addAll(new Rotate(0, Rotate.X_AXIS), rotateY);    
         group.getChildren().add(model);         
     }
@@ -70,9 +70,7 @@ public class SurfacePlot extends TexturedMeshSample {
                
         controlPanel.getGeometry().addControls(func,rx,ry,dx,dy,s);
         
-        modelVisible = EasyBind.combine(
-        model.visibleProperty(), model.sceneProperty(),
-        (visible, scene) -> visible && scene != null);
+        modelVisible = checkModel();
         
         EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).function2DProperty(), func.functionProperty());        
         EasyBind.when(modelVisible).bind(((SurfacePlotMesh)model).rangeXProperty(), rx.getSlider().valueProperty());

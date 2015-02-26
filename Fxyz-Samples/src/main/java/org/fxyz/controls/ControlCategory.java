@@ -125,6 +125,10 @@ public class ControlCategory  extends TitledPane{
     public void removeControl(Node ...  n){
         controlItems.removeAll(Arrays.asList(n));
     }
+
+    public ObservableList<StackPane> getControlItems() {
+        return controlItems;
+    }
     
     
     
